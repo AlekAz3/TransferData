@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace TransferData.Model
 {
-    public class DataContext : DbContext, IDataContext
+    public class DataContext : DbContext
     {
         private readonly IConfiguration _config;
         private readonly ILogger<DataContext> _logger;

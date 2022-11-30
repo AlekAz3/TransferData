@@ -4,10 +4,10 @@ namespace TransferData.Model
 {
     public class DbSchemaExtractor
     {
-        private readonly IDataContext _data;
+        private readonly DataContext _data;
         //.FromSqlRaw($"select table_schema,table_name, column_name, data_type from information_schema.columns where table_name = '{tableName}'")
 
-        public DbSchemaExtractor(IDataContext data)
+        public DbSchemaExtractor(DataContext data)
         {
             _data = data;
         }

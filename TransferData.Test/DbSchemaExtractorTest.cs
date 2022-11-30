@@ -11,7 +11,10 @@ namespace TransferData.Test
 
         public DbSchemaExtractorTest()
         {
-            var builder = new ConfigurationBuilder().AddJsonFile($"appsettings.json", optional: false, reloadOnChange: true);
+            var builder = new ConfigurationBuilder()
+                //.AddInMemoryCollection()
+                
+                .AddJsonFile($"appsettings.json", optional: false, reloadOnChange: true);
             _config = builder.Build();
             _data = new DataContext(new NullLogger<DataContext>(), _config);
             _extractor = new DbSchemaExtractor(new DataContext(new NullLogger<DataContext>(), _config));
@@ -36,7 +39,13 @@ namespace TransferData.Test
 
 
             //PostgreSQL
-            fields = new List<FieldInfo>() { new FieldInfo("id1", "integer"), new FieldInfo("datefield", "date"), new FieldInfo("realnum", "real"), new FieldInfo("id2", "integer") };
+            fields = new List<FieldInfo>() 
+            { 
+                new FieldInfo("id1", "integer"), 
+                new FieldInfo("datefield", "date"), 
+                new FieldInfo("realnum", "real"), 
+                new FieldInfo("id2", "integer") 
+            };
 
             //MSSQL
             //fields = new List<FieldInfo>() { new FieldInfo("id1", "int"), new FieldInfo("datefield", "date"), new FieldInfo("realnum", "real"), new FieldInfo("id2", "int") };
@@ -45,7 +54,7 @@ namespace TransferData.Test
 
         }
 
-        [Fact]
+        [Fact(DisplayName = "Проверка работы при отсутсвующей таблицы")]
         public void DbSchemaExtractor_NotFoundTable()
         {
             Assert.ThrowsAsync<Exception>(() => _extractor.GetTableSchema("Table3"));
@@ -53,3 +62,9 @@ namespace TransferData.Test
 
     }
 }
+
+/*
+ Сформировать селект запрос,
+Выполнить запрос 
+Из полученных данных сформировать мёрдж запрос
+ */

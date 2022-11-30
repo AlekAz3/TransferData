@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using System.Data;
 
 namespace TransferData.Model
 {
@@ -40,21 +41,44 @@ namespace TransferData.Model
             //    _log.LogInformation($"{item.table_name}, {item.column_name}, {item.data_type}");
             //}
 
-            DbSchemaExtractor schema = new DbSchemaExtractor(_data);
+            //DbSchemaExtractor schema = new DbSchemaExtractor(_data);
 
-            Task<SchemaInfo> info = schema.GetTableSchema(table_name);
+            //Task<SchemaInfo> info = schema.GetTableSchema(table_name);
 
-            info.Wait();
+            //info.Wait();
 
-            var res = info.Result;
+            //var res = info.Result;
 
-            _log.LogInformation($"{res.TableName} ");
-            _log.LogInformation("FieldName : FieldType");
-            foreach (var item in res.Fields)
+            //_log.LogInformation($"{res.TableName} ");
+            //_log.LogInformation("FieldName : FieldType");
+            //foreach (var item in res.Fields)
+            //{
+            //    _log.LogInformation($"{item.FieldName}:{item.FieldType}");
+            //}
+
+            var schema = new DbSchemaExtractor(_data).GetTableSchema(table_name).Result;
+
+            var transfer = new Transfer(_data, schema);
+
+
+            //var values = transfer.ConvertDataTableToList(transfer.GetDataTable(transfer.GenerateSelectQuary()));
+
+            //foreach (var ItemList in values)
+            //{
+            //    foreach (var item in ItemList)
+            //    {
+            //        _log.LogInformation(item);
+            //    }
+            //    _log.LogInformation(" ");
+            //}
+
+            foreach (var item in schema.Fields)
             {
-                _log.LogInformation($"{item.FieldName}:{item.FieldType}");
+                _log.LogInformation($"{item.FieldName} : {item.FieldType}");
             }
 
+            var a = transfer.GenerateTempTableQuaty(DbType.Postgres);
+            _log.LogInformation(a);
         }
     }
 }

@@ -31,7 +31,7 @@ namespace TransferData.ConsoleView
                 .Build();
 
             var svc = ActivatorUtilities.CreateInstance<Worker>(host.Services);
-            svc.Run("table1");
+            svc.Run("table2");
         }
     }
 }
