@@ -15,7 +15,7 @@ namespace TransferData.Model
         public async Task<SchemaInfo> GetTableSchema(string tableName)
         {
             var informationSchema = await _data.schema
-                .FromSqlRaw($"select table_schema, table_name, column_name, data_type from information_schema.columns where table_name = '{tableName}'")
+                .FromSqlRaw($"select table_schema, table_name, column_name, data_type from information_schema.columns where table_name = '{tableName}' order by ordinal_position")
                 //.Where(x => x.table_name == tableName)
                 .ToListAsync(CancellationToken.None);
 

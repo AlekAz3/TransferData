@@ -58,7 +58,7 @@ namespace TransferData.Model
 
             var schema = new DbSchemaExtractor(_data).GetTableSchema(table_name).Result;
 
-            var transfer = new Transfer(_data, schema);
+            var transfer = new Transfer(_data, schema, DbType.Postgres);
 
 
             //var values = transfer.ConvertDataTableToList(transfer.GetDataTable(transfer.GenerateSelectQuary()));
@@ -72,13 +72,17 @@ namespace TransferData.Model
             //    _log.LogInformation(" ");
             //}
 
-            foreach (var item in schema.Fields)
-            {
-                _log.LogInformation($"{item.FieldName} : {item.FieldType}");
-            }
+            //foreach (var item in schema.Fields)
+            //{
+            //    _log.LogInformation($"{item.FieldName} : {item.FieldType}");
+            //}
 
-            var a = transfer.GenerateTempTableQuaty(DbType.Postgres);
+            var a = transfer.GenerateTempTableQuary();
             _log.LogInformation(a);
+
+            _log.LogInformation(" ");
+
+            _log.LogInformation(transfer.GenerateMergeQuary());
         }
     }
 }
