@@ -17,7 +17,7 @@ namespace TransferData.Model
             _log = log;
         }
 
-        public void Run(string table_name, DbType type)
+        public void Run(string tableName, DbType type)
         {
             if (!_data.Database.CanConnect())
             {
@@ -25,7 +25,7 @@ namespace TransferData.Model
                 return;
             }
 
-            var schema = new DbSchemaExtractor(_data).GetTableSchema(table_name).Result;
+            var schema = new DbSchemaExtractor(_data).GetTableSchema(tableName).Result;
 
             var transfer = new Transfer(_data, schema, type);
 

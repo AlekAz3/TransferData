@@ -8,7 +8,7 @@ namespace TransferData.Model
     {
         private readonly IConfiguration _config;
         private readonly ILogger<DataContext> _logger;
-        public DbSet<InformationSchema> schema { get; init; }
+        public DbSet<InformationSchema> Schema { get; init; }
 
         public DbType type { get; private set; }
 

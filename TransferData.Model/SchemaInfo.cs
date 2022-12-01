@@ -5,9 +5,9 @@
         public string TableName { get; init; }
         public List<FieldInfo> Fields { get; init; }
 
-        public SchemaInfo(string tName, List<FieldInfo> fields)
+        public SchemaInfo(string tableName, List<FieldInfo> fields)
         {
-            TableName = tName;
+            TableName = tableName;
             Fields = fields;
         }
     }
