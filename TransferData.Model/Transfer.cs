@@ -80,7 +80,7 @@ namespace TransferData.Model
 
                     command.AppendLine($"RETURNING {firs_col} )");
                     command.AppendLine($"");
-                    command.AppendLine($"DELETE FROM {_schema.TableName} WHERE {firs_col} NOT IN (SELECT {firs_col} FROM upsert);");
+                    command.AppendLine($"--DELETE FROM {_schema.TableName} WHERE {firs_col} NOT IN (SELECT {firs_col} FROM upsert);");
 
                     break;
                 case DbType.MSSQL:
@@ -92,7 +92,7 @@ namespace TransferData.Model
                     command.AppendLine($"when not matched then ");
                     command.AppendLine($"insert ({String.Join(", ", columns)}) ");
                     command.AppendLine($"values ({this.ColumnsWithTableName("T_Source")}) ");
-                    command.AppendLine($"when not matched by source then delete");
+                    command.AppendLine($"--when not matched by source then delete");
                     break;
             }
       
