@@ -20,7 +20,7 @@ namespace TransferData.ConsoleView
                 .Enrich.FromLogContext()
                 .WriteTo.Console()
                 .CreateLogger();
-
+            
             Log.Logger.Information("Application Starting");
             
             var result = Parser.Default.ParseArguments<Options>(args);
@@ -38,6 +38,8 @@ namespace TransferData.ConsoleView
                 .ConfigureServices((context, services) =>
                 {
                     services.AddDbContext<DataContext>();
+                    services.AddTransient<Transfer>();
+                    services.AddTransient<DbSchemaExtractor>();
                     services.AddTransient<Worker>();
                 })
                 .UseSerilog()

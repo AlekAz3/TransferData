@@ -9,12 +9,14 @@ namespace TransferData.Model
     public class Worker
     {
         private readonly DataContext _data;
+        private readonly Transfer _transfer;
         private readonly IConfiguration _config;
         private readonly ILogger<Worker> _log;
 
-        public Worker(ILogger<Worker> log, IConfiguration config, DataContext data)
+        public Worker(ILogger<Worker> log, IConfiguration config, DataContext data, Transfer transfer)
         {
             _data = data;
+            _transfer = transfer;
             _config = config;
             _log = log;
         }
@@ -27,14 +29,13 @@ namespace TransferData.Model
                 return;
             }
 
-            var schema = new DbSchemaExtractor(_data).GetTableSchema(tableName).Result;
 
-            var transfer = new Transfer(_data, schema, type);
+            var tempTableQuary = _transfer.GenerateTempTableQuary(tableName, type);
+            var mergeQuary = _transfer.GenerateMergeQuary(tableName, type);
 
-            var tempTableQuary = transfer.GenerateTempTableQuary();
-            var mergeQuary = transfer.GenerateMergeQuary();
+            var dateTime = DateTime.Now;
 
-            var path = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\{tableName}_Transfer.txt";
+            string path = $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\{tableName}_Transfer_{DateOnly.FromDateTime(dateTime)}.txt";
             using (StreamWriter file = new StreamWriter(path, false))
             {
                 file.WriteLine($"Program Output: table {tableName} from {_config.GetValue<DbType>("AppDbOptions:DbType")} to {type} ");
