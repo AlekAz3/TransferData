@@ -4,11 +4,11 @@ using Microsoft.Extensions.Logging;
 
 namespace TransferData.Model
 {
-    public class DataContext : DbContext, IDataContext
+    public class DataContext : DbContext
     {
         private readonly IConfiguration _config;
         private readonly ILogger<DataContext> _logger;
-        public DbSet<InformationSchema> schema { get; init; }
+        public DbSet<InformationSchema> Schema { get; init; }
 
         public DbType type { get; private set; }
 
