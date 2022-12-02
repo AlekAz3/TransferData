@@ -16,9 +16,9 @@
     public enum DbType
     {
         /// <summary>
-        /// БД Postgres
+        /// БД PostgreSQL
         /// </summary>
-        Postgres,
+        PostgreSQL,
 
         /// <summary>
         ///  БД MS SQL
