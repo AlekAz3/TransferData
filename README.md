@@ -20,7 +20,8 @@ TransferData.ConsoleView.exe -t table1 -d MSSQL
 ```
 
 # Результат работы  
-Если программа успешно завершает свою работу, то в консоль выведет 2 SQL комманды  
+Если программа успешно завершает свою работу, на рабочем столе появится файл содержащий 2 SQL команды  
+
 Команда для создания временной таблицы
 ```sql
 select id1, realnum, id2 into #Temptable1 from
@@ -34,15 +35,15 @@ select id1, realnum, id2 into #Temptable1 from
 ) as dt
 ```
 
-Команда для синхронизации 
+Команда для синхронизации таблиц  
 ```sql
-merge table1 AS T_Base  
-using #Temptable1 AS T_Source
-on (T_Base.id1 = T_Source.id1) when matched then 
-update 
-set 
-  realnum = T_Source.realnum, 
-  id2 = T_Source.id2 when not matched then insert (id1, realnum, id2) 
-  values (T_Source.realnum, T_Source.id2) 
-  --when not matched by source then delet
+merge table1 AS T_Base 
+using #Temptable1 AS T_Source 
+on (T_Base.id1 = T_Source.id1) 
+when matched then 
+update set realnum = T_Source.realnum, id2 = T_Source.id2 
+when not matched then 
+insert (id1, realnum, id2) 
+values (T_Source.realnum, T_Source.id2) 
+--when not matched by source then delete
 ```
