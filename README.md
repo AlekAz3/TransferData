@@ -34,8 +34,10 @@ select id1, realnum, id2 into #Temptable1 from
 ) as dt
 ```
 
+Команда для синхронизации 
 ```sql
-merge table1 AS T_Base using #Temptable1 AS T_Source
+merge table1 AS T_Base  
+using #Temptable1 AS T_Source
 on (T_Base.id1 = T_Source.id1) when matched then 
 update 
 set 
