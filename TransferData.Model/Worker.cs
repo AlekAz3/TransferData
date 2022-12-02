@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Data;
+using static System.Net.Mime.MediaTypeNames;
+using System.IO;
 
 namespace TransferData.Model
 {
@@ -29,12 +31,20 @@ namespace TransferData.Model
 
             var transfer = new Transfer(_data, schema, type);
 
-            var a = transfer.GenerateTempTableQuary();
-            _log.LogInformation(a);
+            var tempTableQuary = transfer.GenerateTempTableQuary();
+            var mergeQuary = transfer.GenerateMergeQuary();
 
-            _log.LogInformation(" ");
+            var path = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\{tableName}_Transfer.txt";
+            using (StreamWriter file = new StreamWriter(path, false))
+            {
+                file.WriteLine($"Program Output: table {tableName} from {_config.GetValue<DbType>("AppDbOptions:DbType")} to {type} ");
+                file.WriteLine($"Create temp table: ");
+                file.WriteLine(tempTableQuary);
+                file.WriteLine($"Create merge query: ");
+                file.WriteLine(mergeQuary);
+            }
+            _log.LogInformation($"File created!");
 
-            _log.LogInformation(transfer.GenerateMergeQuary());
         }
     }
 }
