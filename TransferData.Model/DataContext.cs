@@ -25,7 +25,7 @@ namespace TransferData.Model
             type = DbOption.DbType;
             switch (DbOption.DbType)
             {
-                case DbType.Postgres:
+                case DbType.PostgreSQL:
                     optionsBuilder.UseNpgsql(_config.GetConnectionString(typeof(DataContext).Name));
                     _logger.LogInformation("PostgeSQL Connect");
                     break;

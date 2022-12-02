@@ -32,7 +32,7 @@ namespace TransferData.Model
             var command = new StringBuilder();
             switch (_type)
             {
-                case DbType.Postgres:
+                case DbType.PostgreSQL:
                     command.AppendLine($"select {colums} into temp table Temp{_schema.TableName} from");
                     break;
                 case DbType.MSSQL:
@@ -58,7 +58,7 @@ namespace TransferData.Model
             string firsColumn = _schema.Fields.Select(x => x.FieldName).ToList()[0];
             switch (_type)
             {
-                case DbType.Postgres:
+                case DbType.PostgreSQL:
                     command.AppendLine($"with upsert({firsColumn}) as");
                     command.AppendLine($"(");
                     command.AppendLine($"insert into {_schema.TableName} ({colums})");
@@ -125,7 +125,7 @@ namespace TransferData.Model
 
             switch (_data.type)
             {
-                case DbType.Postgres:
+                case DbType.PostgreSQL:
                     types = typesForPosgreSQL;
                     break;
                 case DbType.MSSQL:
