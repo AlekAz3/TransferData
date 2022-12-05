@@ -7,12 +7,14 @@ namespace TransferData.Model
         private readonly DbDataExtractor _dataExtractor;
         private readonly DbSchemaExtractor _schemaExtractor;
         private readonly DbDataHelper _dataHelper;
+        private readonly DataContext _data;
 
-        public TransferMSSQL(DbDataExtractor dataExtractor, DbSchemaExtractor schemaExtractor, DbDataHelper dataHelper)
+        public TransferMSSQL(DbDataExtractor dataExtractor, DbSchemaExtractor schemaExtractor, DbDataHelper dataHelper, DataContext data)
         {
             _dataExtractor = dataExtractor;
             _schemaExtractor = schemaExtractor;
             _dataHelper = dataHelper;
+            _data = data;
         }
 
         public string GenerateMergeQuary(string tableName)
@@ -22,7 +24,7 @@ namespace TransferData.Model
             var columns = schema.Fields.Select(x => x.FieldName).ToList();
             string firsColumn = columns[0];
             columns.RemoveAt(0);
-            var columsJoin = String.Join(", ", columns);
+            string columsJoin = String.Join(", ", columns);
 
             command.AppendLine($"merge {schema.TableName} AS T_Base ");
             command.AppendLine($"using #Temp{schema.TableName} AS T_Source ");
@@ -40,23 +42,21 @@ namespace TransferData.Model
 
         public string GenerateTempTableQuary(string tableName)
         {
-            //var schema = _schemaExtractor.GetTableSchema(tableName).Result;
-            //var columnsJoin = String.Join(", ", schema.Fields.Select(x => x.FieldName));
-            //var tableData = _dataExtractor.ConvertDataTableToList(tableName);
+            var schema = _schemaExtractor.GetTableSchema(tableName).Result;
+            string columnsJoin = String.Join(", ", schema.Fields.Select(x => x.FieldName));
+            var tableData = _dataExtractor.ConvertDataTableToList(tableName);
 
-            //var command = new StringBuilder();
-            //command.AppendLine($"select {columnsJoin} into #Temp{schema.TableName} from");
+            var command = new StringBuilder();
+            command.AppendLine($"select {columnsJoin} into #Temp{schema.TableName} from");
+            command.AppendLine("( ");
+            for (int i = 0; i < tableData.Count - 1; i++)
+                command.AppendLine($"select {_dataHelper.JoinWithQuetes(tableData[i], schema, _data.type)} union all");
+            command.AppendLine($"select {_dataHelper.JoinWithQuetes(tableData[tableData.Count - 1], schema, _data.type)}");
 
+            command.AppendLine(") as dt");
 
-            //command.AppendLine("( ");
-            //for (int i = 0; i < tableData.Count - 1; i++)
-            //    command.AppendLine($"select {JoinWithQuetesForSelect(tableData[i], schema)} union all");
-            //command.AppendLine($"select {JoinWithQuetesForSelect(tableData[tableData.Count - 1], schema)}");
-
-            //command.AppendLine(") as dt");
-
-            //return command.ToString();
-            return "";
+            return command.ToString();
         }
     }
 }
+//bigint, numeric, bit, smallint, decimal, smallmoney, int, tinyint, money, float, real

@@ -21,37 +21,28 @@ namespace TransferData.Model
             _transfer = transfer;
         }
 
-        public void Run(string tableName, DbType type)
+        public void Run(string tableName, DbType dbType)
         {
-            //if (!_data.Database.CanConnect())
-            //{
-            //    _log.LogError("Can't connect to db");
-            //    return;
-            //}
+            if (!_data.Database.CanConnect())
+            {
+                _log.LogError("Can't connect to db");
+                return;
+            }
+            string tempTableQuary = _transfer.GenerateTempTableQuary(tableName);
+            string mergeQuary = _transfer.GenerateMergeQuary(tableName);
+            var dateTime = DateTime.Now;
 
-            //var schema = new DbSchemaExtractor(_data).GetTableSchema(tableName).Result;
-
-            //var dataExtractor = new DbDataExtractor(_data);
-
-            //var transfer = new Transfer(_data, schema, dataExtractor, type);
-
-            //var tempTableQuary = transfer.GenerateTempTableQuary();
-            //var mergeQuary = transfer.GenerateMergeQuary();
-
-            //var path = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\{tableName}_Transfer.txt";
-            //using (StreamWriter file = new StreamWriter(path, false))
-            //{
-            //    file.WriteLine($"Program Output: table {tableName} from {_config.GetValue<DbType>("AppDbOptions:DbType")} to {type} ");
-            //    file.WriteLine($"Create temp table: ");
-            //    file.WriteLine(tempTableQuary);
-            //    file.WriteLine($"Create merge query: ");
-            //    file.WriteLine(mergeQuary);
-            //}
-            //_log.LogInformation($"File created!");
-
-
-            var a = _transfer.GenerateMergeQuary("table1");
-            _log.LogInformation(a);
+            string path = $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\{tableName}_Transfer_{DateOnly.FromDateTime(dateTime)}.txt";
+            
+            using (var file = new StreamWriter(path, false))
+            {
+                file.WriteLine($"--Program Output: table {tableName} from {_config.GetValue<DbType>("AppDbOptions:DbType")} to {dbType} ");
+                file.WriteLine($"--Create temp table: ");
+                file.WriteLine(tempTableQuary);
+                file.WriteLine($"--Create merge query: ");
+                file.WriteLine(mergeQuary);
+            }
+            _log.LogInformation($"File created!");
 
         }
     }

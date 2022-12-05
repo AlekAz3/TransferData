@@ -11,10 +11,8 @@ namespace TransferData.ConsoleView
 {
     public class Program
     {
-        static void Main()
+        static void Main(string[] args)
         {
-            var args = "-t table1 -d MSSQL".Split();
-
             var builder = new ConfigurationBuilder();
 
             Log.Logger = new LoggerConfiguration()
@@ -43,8 +41,8 @@ namespace TransferData.ConsoleView
                     services.AddTransient<DbDataExtractor>();
                     services.AddTransient<DbSchemaExtractor>();
                     services.AddTransient<DbDataHelper>();
-                    //services.AddTransient<TransferMSSQL>();
-                    //services.AddTransient<TransferPostgreSQL>();
+                    services.AddTransient<TransferMSSQL>();
+                    services.AddTransient<TransferPostgreSQL>();
                     services.AddTransient<ITransfer>(serviceProvider =>
                     {
                         switch (dbType)
@@ -69,12 +67,6 @@ namespace TransferData.ConsoleView
 
     class Options
     {
-        //[Option('f', "fromdatabase", Required = false, HelpText = "Название  ")]
-        //public DbType fromDbType { get; set; }
-
-        //[Option('c', "connection", Required = false, HelpText = "Строка подключения  ")]
-        //public string connectionString { get; set; }
-
         [Option('t',"table", Required = true, HelpText = "Название таблицы ")]
         public string tableName { get; set; }
 
