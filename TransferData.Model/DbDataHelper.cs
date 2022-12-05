@@ -41,7 +41,7 @@
             return line.Remove(line.Length - 2, 2);
         }
 
-        public string fieldsWithQuotes(List<string> input, SchemaInfo schema, DbType dbType)
+        public string FieldsWithQuotes(List<string> input, SchemaInfo schema, DbType dbType)
         {
             var columns = schema.Fields;
             string result = String.Empty;

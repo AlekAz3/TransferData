@@ -53,7 +53,7 @@ namespace TransferData.Test
         {
             SchemaInfo schemaInfo = new SchemaInfo("table1", new List<FieldInfo>() { new FieldInfo("col1", "int"), new FieldInfo("col2", "varchar"), new FieldInfo("col3", "double") });
             List<string> data = new List<string>() { "1", "twq", "4.6"};
-            var result = _dataHelper.fieldsWithQuotes(data, schemaInfo, DbType.MSSQL);
+            var result = _dataHelper.FieldsWithQuotes(data, schemaInfo, DbType.MSSQL);
             string expect = $"1 as col1, 'twq' as col2, 4.6 as col3";
 
             Assert.Equal(expect, result);
