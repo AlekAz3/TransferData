@@ -1,8 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System.Data;
-using static System.Net.Mime.MediaTypeNames;
-using System.IO;
 
 namespace TransferData.Model
 {
@@ -28,11 +25,11 @@ namespace TransferData.Model
                 _log.LogError("Can't connect to db");
                 return;
             }
+
             string tempTableQuary = _transfer.GenerateTempTableQuary(tableName);
             string mergeQuary = _transfer.GenerateMergeQuary(tableName);
-            var dateTime = DateTime.Now;
 
-            string path = $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\{tableName}_Transfer_{DateOnly.FromDateTime(dateTime)}.txt";
+            string path = $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\{tableName}_Transfer_{DateOnly.FromDateTime(DateTime.Now)}.txt";
             
             using (var file = new StreamWriter(path, false))
             {

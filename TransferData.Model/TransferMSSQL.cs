@@ -50,8 +50,8 @@ namespace TransferData.Model
             command.AppendLine($"select {columnsJoin} into #Temp{schema.TableName} from");
             command.AppendLine("( ");
             for (int i = 0; i < tableData.Count - 1; i++)
-                command.AppendLine($"select {_dataHelper.JoinWithQuetes(tableData[i], schema, _data.type)} union all");
-            command.AppendLine($"select {_dataHelper.JoinWithQuetes(tableData[tableData.Count - 1], schema, _data.type)}");
+                command.AppendLine($"select {_dataHelper.fieldsWithQuotes(tableData[i], schema, _data.type)} union all");
+            command.AppendLine($"select {_dataHelper.fieldsWithQuotes(tableData[tableData.Count - 1], schema, _data.type)}");
 
             command.AppendLine(") as dt");
 
@@ -59,4 +59,3 @@ namespace TransferData.Model
         }
     }
 }
-//bigint, numeric, bit, smallint, decimal, smallmoney, int, tinyint, money, float, real

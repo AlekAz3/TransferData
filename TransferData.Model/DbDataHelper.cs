@@ -1,7 +1,4 @@
-﻿using System.Linq;
-using System.Xml.Linq;
-
-namespace TransferData.Model
+﻿namespace TransferData.Model
 {
     public class DbDataHelper
     {
@@ -44,7 +41,7 @@ namespace TransferData.Model
             return line.Remove(line.Length - 2, 2);
         }
 
-        public string JoinWithQuetes(List<string> input, SchemaInfo schema, DbType dbType)
+        public string fieldsWithQuotes(List<string> input, SchemaInfo schema, DbType dbType)
         {
             var columns = schema.Fields;
             string result = String.Empty;
