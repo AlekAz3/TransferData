@@ -6,14 +6,12 @@ namespace TransferData.Model
     {
         private readonly DbDataExtractor _dataExtractor;
         private readonly DbSchemaExtractor _schemaExtractor;
-        private readonly DbDataHelper _dataHelper;
         private readonly DataContext _data;
 
-        public TransferPostgreSQL(DbDataExtractor dataExtractor, DbSchemaExtractor schemaExtractor, DbDataHelper dataHelper, DataContext data)
+        public TransferPostgreSQL(DbDataExtractor dataExtractor, DbSchemaExtractor schemaExtractor, DataContext data)
         {
             _dataExtractor = dataExtractor;
             _schemaExtractor = schemaExtractor;
-            _dataHelper = dataHelper;
             _data = data;
         }
 
@@ -56,8 +54,8 @@ namespace TransferData.Model
             command.AppendLine($"select {columnsJoin} into temp table Temp{schema.TableName} from");
             command.AppendLine("( ");
             for (int i = 0; i < tableData.Count - 1; i++)
-                command.AppendLine($"select {_dataHelper.FieldsWithQuotes(tableData[i], schema, _data.type)} union all");
-            command.AppendLine($"select {_dataHelper.FieldsWithQuotes(tableData[tableData.Count - 1], schema, _data.type)}");
+                command.AppendLine($"select {DbDataHelper.FieldsWithQuotes(tableData[i], schema, _data.type)} union all");
+            command.AppendLine($"select {DbDataHelper.FieldsWithQuotes(tableData[tableData.Count - 1], schema, _data.type)}");
 
             command.AppendLine(") as dt");
 

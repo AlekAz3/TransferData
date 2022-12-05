@@ -6,14 +6,12 @@ namespace TransferData.Model
     {
         private readonly DbDataExtractor _dataExtractor;
         private readonly DbSchemaExtractor _schemaExtractor;
-        private readonly DbDataHelper _dataHelper;
         private readonly DataContext _data;
 
-        public TransferMSSQL(DbDataExtractor dataExtractor, DbSchemaExtractor schemaExtractor, DbDataHelper dataHelper, DataContext data)
+        public TransferMSSQL(DbDataExtractor dataExtractor, DbSchemaExtractor schemaExtractor, DataContext data)
         {
             _dataExtractor = dataExtractor;
             _schemaExtractor = schemaExtractor;
-            _dataHelper = dataHelper;
             _data = data;
         }
 
@@ -30,10 +28,10 @@ namespace TransferData.Model
             command.AppendLine($"using #Temp{schema.TableName} AS T_Source ");
             command.AppendLine($"on (T_Base.{schema.Fields[0].FieldName} = T_Source.{schema.Fields[0].FieldName}) ");
             command.AppendLine($"when matched then ");
-            command.AppendLine($"update set {_dataHelper.CompareColumns(schema)} ");
+            command.AppendLine($"update set {DbDataHelper.CompareColumns(schema)} ");
             command.AppendLine($"when not matched then ");
             command.AppendLine($"insert ({String.Join(", ", columns)}) ");
-            command.AppendLine($"values ({_dataHelper.ColumnsWithTableName("T_Source", schema)}) ");
+            command.AppendLine($"values ({DbDataHelper.ColumnsWithTableName("T_Source", schema)}) ");
             command.AppendLine($"--when not matched by source then delete");
 
             return command.ToString();
@@ -50,8 +48,8 @@ namespace TransferData.Model
             command.AppendLine($"select {columnsJoin} into #Temp{schema.TableName} from");
             command.AppendLine("( ");
             for (int i = 0; i < tableData.Count - 1; i++)
-                command.AppendLine($"select {_dataHelper.FieldsWithQuotes(tableData[i], schema, _data.type)} union all");
-            command.AppendLine($"select {_dataHelper.FieldsWithQuotes(tableData[tableData.Count - 1], schema, _data.type)}");
+                command.AppendLine($"select {DbDataHelper.FieldsWithQuotes(tableData[i], schema, _data.type)} union all");
+            command.AppendLine($"select {DbDataHelper.FieldsWithQuotes(tableData[tableData.Count - 1], schema, _data.type)}");
 
             command.AppendLine(") as dt");
 
