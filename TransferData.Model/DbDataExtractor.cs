@@ -8,14 +8,22 @@ namespace TransferData.Model
     public class DbDataExtractor
     {
         private readonly DataContext _data;
+        private readonly DbSchemaExtractor _schemaExtractor;
 
-        public DbDataExtractor(DataContext data)
+        public DbDataExtractor(DataContext data, DbSchemaExtractor schemaExtractor)
         {
             _data = data;
+            _schemaExtractor = schemaExtractor;
         }
 
-        public DataTable GetDataTable(string sqlQuery)
+        public string GenerateSelectQuary(SchemaInfo schema) => $"select {String.Join(", ", schema.Fields.Select(x => x.FieldName).ToList())} from {schema.TableName}";
+
+        public DataTable GetDataTable(string tableName)
         {
+            var schema = _schemaExtractor.GetTableSchema(tableName).Result;
+
+            string sqlQuery = GenerateSelectQuary(schema);
+
             var dbFactory = DbProviderFactories.GetFactory(_data.Database.GetDbConnection());
 
             using (var cmd = dbFactory.CreateCommand())
@@ -33,10 +41,13 @@ namespace TransferData.Model
             }
         }
 
-        public List<List<string>> ConvertDataTableToList(DataTable dt)
+        public List<List<string>> ConvertDataTableToList(string tableName)
         {
+
+            var dataTable = GetDataTable(tableName);
+
             var resultList = new List<List<string>>();
-            foreach (DataRow row in dt.Rows)
+            foreach (DataRow row in dataTable.Rows)
             {
                 object[] cells = row.ItemArray;
                 var cellsList = new List<string>();

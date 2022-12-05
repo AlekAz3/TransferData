@@ -11,8 +11,10 @@ namespace TransferData.ConsoleView
 {
     public class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
+            var args = "-t table1 -d MSSQL".Split();
+
             var builder = new ConfigurationBuilder();
 
             Log.Logger = new LoggerConfiguration()
@@ -39,6 +41,22 @@ namespace TransferData.ConsoleView
                 {
                     services.AddDbContext<DataContext>();
                     services.AddTransient<DbDataExtractor>();
+                    services.AddTransient<DbSchemaExtractor>();
+                    services.AddTransient<DbDataHelper>();
+                    //services.AddTransient<TransferMSSQL>();
+                    //services.AddTransient<TransferPostgreSQL>();
+                    services.AddTransient<ITransfer>(serviceProvider =>
+                    {
+                        switch (dbType)
+                        {
+                            case DbType.MSSQL:
+                                return serviceProvider.GetService<TransferMSSQL>();
+                            case DbType.PostgreSQL:
+                                return serviceProvider.GetService<TransferPostgreSQL>();
+                            default:
+                                throw new KeyNotFoundException();
+                        }
+                    });
                     services.AddTransient<Worker>();
                 })
                 .UseSerilog()
