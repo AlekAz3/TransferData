@@ -10,6 +10,5 @@
             FieldName = fieldName;
             FieldType = fieldType;
         }
-
     }
 }
