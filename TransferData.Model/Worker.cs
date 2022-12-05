@@ -29,7 +29,9 @@ namespace TransferData.Model
 
             var schema = new DbSchemaExtractor(_data).GetTableSchema(tableName).Result;
 
-            var transfer = new Transfer(_data, schema, type);
+            var dataExtractor = new DbDataExtractor(_data);
+
+            var transfer = new Transfer(_data, schema, dataExtractor, type);
 
             var tempTableQuary = transfer.GenerateTempTableQuary();
             var mergeQuary = transfer.GenerateMergeQuary();

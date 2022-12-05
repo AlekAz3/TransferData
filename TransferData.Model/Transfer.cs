@@ -9,15 +9,17 @@ namespace TransferData.Model
     public class Transfer
     {
         private readonly DataContext _data;
+        private readonly DbDataExtractor _dataExtractor;
         private readonly SchemaInfo _schema;
         private readonly DbType _type;
         private string colums;
         private List<string> typesForPosgreSQL = new List<string>() { "character varying", "date", "varchar" };//Типы данных где нужны ковычки  
         private List<string> typesForMSSQL = new List<string>() { "varchar", "date" };//Типы данных где нужны ковычки  
 
-        public Transfer(DataContext data, SchemaInfo schema, DbType dbType)
+        public Transfer(DataContext data, SchemaInfo schema, DbDataExtractor dataExtractor ,DbType dbType)
         {
             _data = data;
+            _dataExtractor = dataExtractor;
             _schema = schema;
             colums = String.Join(", ", _schema.Fields.Select(x => x.FieldName));
             _type = dbType;
@@ -28,7 +30,7 @@ namespace TransferData.Model
 
         public string GenerateTempTableQuary()
         {
-            var data = ConvertDataTableToList(GetDataTable(GenerateSelectQuary()));
+            var data = _dataExtractor.ConvertDataTableToList(_dataExtractor.GetDataTable(GenerateSelectQuary()));
             var command = new StringBuilder();
             switch (_type)
             {
@@ -142,45 +144,6 @@ namespace TransferData.Model
                     result += $"{input[i]} as {columnName[i].FieldName}, ";
 
             return result.Remove(result.Length - 2, 2);
-        }
-
-
-        public DataTable GetDataTable(string sqlQuery)
-        {
-            var dbFactory = DbProviderFactories.GetFactory(_data.Database.GetDbConnection());
-
-            using (var cmd = dbFactory.CreateCommand())
-            {
-                cmd.Connection = _data.Database.GetDbConnection();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = sqlQuery;
-                using (var adapter = dbFactory.CreateDataAdapter())
-                {
-                    adapter.SelectCommand = cmd;
-                    var dataTable = new DataTable();
-                    adapter.Fill(dataTable);
-                    return dataTable;
-                }
-            }
-        }
-
-        public List<List<string>> ConvertDataTableToList(DataTable dt)
-        {
-            var resultList = new List<List<string>>();
-            foreach (DataRow row in dt.Rows)
-            {
-                object[] cells = row.ItemArray;
-                var cellsList = new List<string>();
-                foreach (object cell in cells)
-                {
-                    if (cell is null)
-                        cellsList.Add("null");
-                    else
-                        cellsList.Add(cell.ToString().Replace(',', '.'));
-                }
-                resultList.Add(cellsList);
-            }
-            return resultList;
         }
     }
 }

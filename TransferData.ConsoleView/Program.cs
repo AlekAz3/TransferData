@@ -38,6 +38,7 @@ namespace TransferData.ConsoleView
                 .ConfigureServices((context, services) =>
                 {
                     services.AddDbContext<DataContext>();
+                    services.AddTransient<DbDataExtractor>();
                     services.AddTransient<Worker>();
                 })
                 .UseSerilog()
