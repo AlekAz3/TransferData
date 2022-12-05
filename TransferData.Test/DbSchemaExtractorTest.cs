@@ -13,11 +13,10 @@ namespace TransferData.Test
         {
             var builder = new ConfigurationBuilder()
                 //.AddInMemoryCollection()
-                
                 .AddJsonFile($"appsettings.json", optional: false, reloadOnChange: true);
             _config = builder.Build();
             _data = new DataContext(new NullLogger<DataContext>(), _config);
-            _extractor = new DbSchemaExtractor(new DataContext(new NullLogger<DataContext>(), _config));
+            _extractor = new DbSchemaExtractor(_data);
 
         }
 
@@ -42,7 +41,6 @@ namespace TransferData.Test
             fields = new List<FieldInfo>() 
             { 
                 new FieldInfo("id1", "integer"), 
-                new FieldInfo("datefield", "date"), 
                 new FieldInfo("realnum", "real"), 
                 new FieldInfo("id2", "integer") 
             };
@@ -62,9 +60,3 @@ namespace TransferData.Test
 
     }
 }
-
-/*
- Сформировать селект запрос,
-Выполнить запрос 
-Из полученных данных сформировать мёрдж запрос
- */
