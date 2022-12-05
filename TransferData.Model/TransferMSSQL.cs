@@ -17,7 +17,7 @@ namespace TransferData.Model
             _data = data;
         }
 
-        public string GenerateMergeQuary(string tableName)
+        public string GenerateMergeQuery(string tableName)
         {
             var schema = _schemaExtractor.GetTableSchema(tableName).Result;
             var command = new StringBuilder();

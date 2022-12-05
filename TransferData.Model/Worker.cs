@@ -26,8 +26,8 @@ namespace TransferData.Model
                 return;
             }
 
-            string tempTableQuary = _transfer.GenerateTempTableQuary(tableName);
-            string mergeQuary = _transfer.GenerateMergeQuary(tableName);
+            string tempTableQuery = _transfer.GenerateTempTableQuary(tableName);
+            string mergeQuery = _transfer.GenerateMergeQuery(tableName);
 
             string path = $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\{tableName}_Transfer_{DateOnly.FromDateTime(DateTime.Now)}.txt";
             
@@ -35,9 +35,9 @@ namespace TransferData.Model
             {
                 file.WriteLine($"--Program Output: table {tableName} from {_config.GetValue<DbType>("AppDbOptions:DbType")} to {dbType} ");
                 file.WriteLine($"--Create temp table: ");
-                file.WriteLine(tempTableQuary);
+                file.WriteLine(tempTableQuery);
                 file.WriteLine($"--Create merge query: ");
-                file.WriteLine(mergeQuary);
+                file.WriteLine(mergeQuery);
             }
             _log.LogInformation($"File created!");
 
