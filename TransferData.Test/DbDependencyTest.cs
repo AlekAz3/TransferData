@@ -28,9 +28,18 @@ namespace TransferData.Test
         [Fact]
         public void GetPrimaryKeyColumn_Test()
         {
-            string expected = "id1";
-            string result = _dependency.GetPrimaryKeyColumn("table1");
+            string expected = "code";
+            string result = _dependency.GetPrimaryKeyColumn("pc");
            
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void GetForiegnKeyColumns_Test()
+        {
+            List<string> expected = new List<string>() { "model"};
+            List<string> result = _dependency.GetForiegnKeyColumns("pc");
+
             Assert.Equal(expected, result);
         }
 
