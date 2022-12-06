@@ -43,5 +43,14 @@ namespace TransferData.Test
             Assert.Equal(expected, result);
         }
 
+        [Fact]
+        public void GetParentTable_Test()
+        {
+            string expected = "Product";
+            string result = _dependency.GetParentTable("model");
+
+            Assert.Equal(expected, result);
+        }
+
     }
 }
