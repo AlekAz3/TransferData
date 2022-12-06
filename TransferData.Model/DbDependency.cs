@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace TransferData.Model
 {
-    public class DbDependencyCheck
+    public class DbDependency
     {
         private readonly DataContext _data;
 
-        public DbDependencyCheck(DataContext data)
+        public DbDependency(DataContext data)
         {
             _data = data;
         }
