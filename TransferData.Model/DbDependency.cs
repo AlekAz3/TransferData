@@ -1,10 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.IdentityModel.Tokens;
 
 namespace TransferData.Model
 {
@@ -20,7 +15,7 @@ namespace TransferData.Model
         public List<string> GetForiegnKeyColumns(string tableName)
         {
             var result = _data.Database.SqlQueryRaw<string>($"select COLUMN_NAME from ( select CONSTRAINT_NAME from INFORMATION_SCHEMA.TABLE_CONSTRAINTS where CONSTRAINT_TYPE = 'FOREIGN KEY') as a, INFORMATION_SCHEMA.KEY_COLUMN_USAGE as b where a.CONSTRAINT_NAME = b.CONSTRAINT_NAME and TABLE_NAME = '{tableName}';").ToList();
-            
+
             return result;
         }
 
@@ -39,5 +34,45 @@ namespace TransferData.Model
             return result;
         }
 
+        private string GetTableDependency(string tableName)
+        {
+            
+            string result = $"{tableName} ";
+
+            var a = GetForiegnKeyColumns(tableName);
+
+            if (a.IsNullOrEmpty())
+            {
+                return result.Trim();
+            }
+            else
+            {
+                foreach (var item in a)
+                {
+                    result +=  $"{GetTableDependency(GetParentTable(item))} ";
+                }
+            }
+
+            return result.Trim();
+        }
+
+        public List<string> GetTableDependencyTables(string tableName)
+        {
+            var list = GetTableDependency(tableName).Split();
+            var result = new List<string>();
+            foreach (var item in list)
+            {
+                if (result.Contains(item))
+                {
+                    result.Remove(result.Find(x => x == item));
+                    result.Add(item);
+                }
+                else
+                {
+                    result.Add(item);
+                }
+            }
+            return result;
+        }
     }
 }

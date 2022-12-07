@@ -52,5 +52,16 @@ namespace TransferData.Test
             Assert.Equal(expected, result);
         }
 
+        [Fact]
+        public void GetTableDependencyTables_Test()
+        {
+            var expected = new List<string>() {"table1", "table2",  "table4", "table3", "table5" };
+
+            var result = _dependency.GetTableDependencyTables("table1");
+
+
+            Assert.Equal(expected, result);
+        }
+
     }
 }
