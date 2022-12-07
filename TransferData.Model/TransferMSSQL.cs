@@ -32,8 +32,9 @@ namespace TransferData.Model
             command.AppendLine($"when not matched then ");
             command.AppendLine($"insert ({String.Join(", ", columns)}) ");
             command.AppendLine($"values ({DbDataHelper.ColumnsWithTableName("T_Source", schema)}) ");
+            command.AppendLine($";");
             command.AppendLine($"--when not matched by source then delete");
-
+            
             return command.ToString();
 
         }
@@ -51,7 +52,7 @@ namespace TransferData.Model
                 command.AppendLine($"select {DbDataHelper.FieldsWithQuotes(tableData[i], schema, _data.type)} union all");
             command.AppendLine($"select {DbDataHelper.FieldsWithQuotes(tableData[tableData.Count - 1], schema, _data.type)}");
 
-            command.AppendLine(") as dt");
+            command.AppendLine(") as dt;");
 
             return command.ToString();
         }

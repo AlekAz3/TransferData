@@ -37,9 +37,8 @@ namespace TransferData.Model
             command.AppendLine($"{columns[columns.Count() - 1]} = excluded.{columns[columns.Count() - 1]}");
 
             command.AppendLine($"returning {firsColumn} )");
-            command.AppendLine($"");
+            command.AppendLine($";");
             command.AppendLine($"--delete from {schema.TableName} where {firsColumn} not in (select {firsColumn} from upsert);");
-
             return command.ToString();
         }
 
@@ -57,7 +56,7 @@ namespace TransferData.Model
                 command.AppendLine($"select {DbDataHelper.FieldsWithQuotes(tableData[i], schema, _data.type)} union all");
             command.AppendLine($"select {DbDataHelper.FieldsWithQuotes(tableData[tableData.Count - 1], schema, _data.type)}");
 
-            command.AppendLine(") as dt");
+            command.AppendLine(") as dt;");
 
             return command.ToString();
         }
