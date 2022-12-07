@@ -39,7 +39,18 @@
                 new List<string>() //MSSQL
                 {
                     "varchar",
-                    "date"
+                    "date",
+                    "datetime",
+                    "datetime2",
+                    "datetimeoffset",
+                    "smalldatetime",
+                    "time",
+                    "char",
+                    "varchar",
+                    "text",
+                    "nvarchar",
+                    "nchar",
+                    "ntext",
                 }
             };
 
