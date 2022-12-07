@@ -33,8 +33,14 @@
                 new List<string>() //PostgreSQL
                 {
                     "character varying",
+                    "varchar",
+                    "char",
+                    "character",
+                    "text",
+                    "timestamp",
                     "date",
-                    "varchar"
+                    "time",
+                    "interval"
                 },
                 new List<string>() //MSSQL
                 {
