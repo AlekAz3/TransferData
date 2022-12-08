@@ -5,19 +5,19 @@ namespace TransferData.Model
     public class TransferPostgreSQL : ITransfer
     {
         private readonly DbDataExtractor _dataExtractor;
-        private readonly DbSchemaExtractor _schemaExtractor;
+        private readonly MetadataExtractor _metadataExtractor;
         private readonly DataContext _data;
 
-        public TransferPostgreSQL(DbDataExtractor dataExtractor, DbSchemaExtractor schemaExtractor, DataContext data)
+        public TransferPostgreSQL(DbDataExtractor dataExtractor, MetadataExtractor metadataExtractor, DataContext data)
         {
             _dataExtractor = dataExtractor;
-            _schemaExtractor = schemaExtractor;
+            _metadataExtractor = metadataExtractor;
             _data = data;
         }
 
         public string GenerateMergeQuery(string tableName)
         {
-            var schema = _schemaExtractor.GetTableSchema(tableName).Result;
+            var schema = _metadataExtractor.GetTableSchema(tableName);
             var command = new StringBuilder();
             var columns = schema.Fields.Select(x => x.FieldName).ToList();
             string firsColumn = columns[0];
@@ -45,7 +45,7 @@ namespace TransferData.Model
 
         public string GenerateTempTableQuary(string tableName)
         {
-            var schema = _schemaExtractor.GetTableSchema(tableName).Result;
+            var schema = _metadataExtractor.GetTableSchema(tableName);
             string columnsJoin = String.Join(", ", schema.Fields.Select(x => x.FieldName));
             var tableData = _dataExtractor.ConvertDataTableToList(tableName);
 

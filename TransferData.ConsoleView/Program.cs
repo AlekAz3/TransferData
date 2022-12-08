@@ -39,8 +39,7 @@ namespace TransferData.ConsoleView
                 {
                     services.AddDbContext<DataContext>();
                     services.AddTransient<DbDataExtractor>();
-                    services.AddTransient<DbSchemaExtractor>();
-                    services.AddTransient<DbDependency>();
+                    services.AddTransient<MetadataExtractor>();
                     services.AddTransient<TransferMSSQL>();
                     services.AddTransient<TransferPostgreSQL>();
                     services.AddTransient<ITransfer>(serviceProvider =>

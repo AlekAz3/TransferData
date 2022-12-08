@@ -7,19 +7,19 @@ namespace TransferData.Model
     public class DbDataExtractor
     {
         private readonly DataContext _data;
-        private readonly DbSchemaExtractor _schemaExtractor;
+        private readonly MetadataExtractor _metadataExtractor;
 
-        public DbDataExtractor(DataContext data, DbSchemaExtractor schemaExtractor)
+        public DbDataExtractor(DataContext data, MetadataExtractor metadataExtractor)
         {
             _data = data;
-            _schemaExtractor = schemaExtractor;
+            _metadataExtractor = metadataExtractor;
         }
 
-        public string GenerateSelectQuary(SchemaInfo schema) => $"select {String.Join(", ", schema.Fields.Select(x => x.FieldName).ToList())} from {schema.TableName}";
+        private string GenerateSelectQuary(SchemaInfo schema) => $"select {String.Join(", ", schema.Fields.Select(x => x.FieldName).ToList())} from {schema.TableName}";
 
-        public DataTable GetDataTable(string tableName)
+        private DataTable GetDataTable(string tableName)
         {
-            var schema = _schemaExtractor.GetTableSchema(tableName).Result;
+            var schema = _metadataExtractor.GetTableSchema(tableName);
 
             string sqlQuery = GenerateSelectQuary(schema);
 

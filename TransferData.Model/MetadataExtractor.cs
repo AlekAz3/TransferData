@@ -1,32 +1,37 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace TransferData.Model
 {
-    public class DbDependency
+    public class MetadataExtractor
     {
         private readonly DataContext _data;
 
-        public DbDependency(DataContext data)
+        public MetadataExtractor(DataContext data)
         {
             _data = data;
         }
 
-        public List<string> GetForiegnKeyColumns(string tableName)
+        internal List<string> GetForiegnKeyColumns(string tableName)
         {
             var result = _data.Database.SqlQueryRaw<string>($"select COLUMN_NAME from ( select CONSTRAINT_NAME from INFORMATION_SCHEMA.TABLE_CONSTRAINTS where CONSTRAINT_TYPE = 'FOREIGN KEY') as a, INFORMATION_SCHEMA.KEY_COLUMN_USAGE as b where a.CONSTRAINT_NAME = b.CONSTRAINT_NAME and TABLE_NAME = '{tableName}';").ToList();
 
             return result;
         }
 
-        public string GetPrimaryKeyColumn(string tableName)
+        internal string GetPrimaryKeyColumn(string tableName)
         {
             string column = _data.Database.SqlQueryRaw<string>($"select COLUMN_NAME from ( select CONSTRAINT_NAME from INFORMATION_SCHEMA.TABLE_CONSTRAINTS where CONSTRAINT_TYPE = 'PRIMARY KEY') as a, INFORMATION_SCHEMA.KEY_COLUMN_USAGE as b where a.CONSTRAINT_NAME = b.CONSTRAINT_NAME and TABLE_NAME = '{tableName}';").ToList()[0];
             return column;
         }
 
 
-        public string GetParentTable(string foreignColumn)
+        internal string GetParentTable(string foreignColumn)
         {
             string result = _data.Database.SqlQueryRaw<string>($"select TABLE_NAME, COLUMN_NAME from (select CONSTRAINT_NAME from INFORMATION_SCHEMA.TABLE_CONSTRAINTS where CONSTRAINT_TYPE = 'PRIMARY KEY') as a, INFORMATION_SCHEMA.KEY_COLUMN_USAGE as b where a.CONSTRAINT_NAME = b.CONSTRAINT_NAME and COLUMN_NAME = '{foreignColumn}';").ToList()[0];
 
@@ -36,7 +41,7 @@ namespace TransferData.Model
 
         private string GetTableDependency(string tableName)
         {
-            
+
             string result = $"{tableName} ";
 
             var a = GetForiegnKeyColumns(tableName);
@@ -49,7 +54,7 @@ namespace TransferData.Model
             {
                 foreach (var item in a)
                 {
-                    result +=  $"{GetTableDependency(GetParentTable(item))} ";
+                    result += $"{GetTableDependency(GetParentTable(item))} ";
                 }
             }
 
@@ -74,5 +79,24 @@ namespace TransferData.Model
             }
             return result;
         }
+
+        internal SchemaInfo GetTableSchema(string tableName)
+        {
+            var informationSchema = _data.Schema
+                .FromSqlRaw($"select table_schema, table_name, column_name, data_type from information_schema.columns where table_name = '{tableName}' order by ordinal_position")
+                .ToList();
+
+            if (informationSchema.Count == 0)
+                throw new Exception("Table not Found");
+
+
+            var fields = new List<FieldInfo>();
+
+            for (int i = 0; i < informationSchema.Count; i++)
+                fields.Add(new FieldInfo(informationSchema[i].column_name, informationSchema[i].data_type));
+
+            return new SchemaInfo(tableName, fields);
+        }
+
     }
 }

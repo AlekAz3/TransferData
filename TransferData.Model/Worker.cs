@@ -6,15 +6,15 @@ namespace TransferData.Model
     public class Worker
     {
         private readonly DataContext _data;
-        private readonly DbDependency _dependency;
+        private readonly MetadataExtractor _metadataExtractor;
         private readonly IConfiguration _config;
         private readonly ILogger<Worker> _log;
         private readonly ITransfer _transfer;
 
-        public Worker(DataContext data, DbDependency dependency, IConfiguration config, ILogger<Worker> log, ITransfer transfer)
+        public Worker(DataContext data, MetadataExtractor metadataExtractor, IConfiguration config, ILogger<Worker> log, ITransfer transfer)
         {
             _data = data;
-            _dependency = dependency;
+            _metadataExtractor = metadataExtractor;
             _config = config;
             _log = log;
             _transfer = transfer;
@@ -56,7 +56,7 @@ namespace TransferData.Model
 
         public List<string> GetQueriesTempTable(string tableName)
         {
-            var tables = _dependency.GetTableDependencyTables(tableName);
+            var tables = _metadataExtractor.GetTableDependencyTables(tableName);
             tables.Reverse();
             var result = new List<string>();
             foreach (var table in tables)
@@ -68,7 +68,7 @@ namespace TransferData.Model
 
         public List<string> GetMergeQuaries(string tableName)
         {
-            var tables = _dependency.GetTableDependencyTables(tableName);
+            var tables = _metadataExtractor.GetTableDependencyTables(tableName);
             tables.Reverse();
             var result = new List<string>();
             foreach (var table in tables)
