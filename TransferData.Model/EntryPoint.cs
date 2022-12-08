@@ -41,9 +41,8 @@ namespace TransferData.Model
                 
                 foreach (var item in queries)
                 {
-                    file.WriteLine($"--Create temp table: ");
+                    file.WriteLine($"--________Table: {item.TableName}____________");
                     file.WriteLine(item.TempTableQuery);
-                    file.WriteLine($"--Create merge query: ");
                     file.WriteLine(item.MurgeQuery);
                     file.WriteLine("");
                 }
@@ -59,7 +58,7 @@ namespace TransferData.Model
             var result = new List<TableQuery>();
             foreach (var table in tables)
             {
-                result.Add( new TableQuery(_transfer.GenerateMergeQuery(table), _transfer.GenerateTempTableQuary(table)));
+                result.Add( new TableQuery(table,_transfer.GenerateMergeQuery(table), _transfer.GenerateTempTableQuary(table)));
             }
             return result;
         }
