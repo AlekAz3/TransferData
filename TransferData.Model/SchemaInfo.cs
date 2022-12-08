@@ -88,15 +88,15 @@
                 }
             };
 
-            string result = String.Empty;
+            List<string> result = new List<string>();
 
             for (int i = 0; i < input.Count; i++)
                 if (!quetes[(int)dbType].Contains(Fields[i].FieldType) && input[i] != "null")
-                    result += $"'{input[i]}' as {Fields[i].FieldName}, ";
+                    result.Add($"'{input[i]}' as {Fields[i].FieldName}");
                 else
-                    result += $"{input[i]} as {Fields[i].FieldName}, ";
+                    result.Add($"{input[i]} as {Fields[i].FieldName}");
 
-            return result.Remove(result.Length - 2, 2);
+            return string.Join(", ", result);
 
         }
 
