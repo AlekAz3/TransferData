@@ -53,8 +53,8 @@ namespace TransferData.Model
             command.AppendLine($"select {columnsJoin} into temp table Temp{schema.TableName} from");
             command.AppendLine("( ");
             for (int i = 0; i < tableData.Count - 1; i++)
-                command.AppendLine($"select {DbDataHelper.FieldsWithQuotes(tableData[i], schema, _data.type)} union all");
-            command.AppendLine($"select {DbDataHelper.FieldsWithQuotes(tableData[tableData.Count - 1], schema, _data.type)}");
+                command.AppendLine($"select {schema.FieldsWithQuotes(tableData[i], _data.type)} union all");
+            command.AppendLine($"select {schema.FieldsWithQuotes(tableData[tableData.Count - 1], _data.type)}");
 
             command.AppendLine(") as dt;");
 

@@ -1,4 +1,6 @@
-﻿namespace TransferData.Model
+﻿using Microsoft.VisualBasic.FileIO;
+
+namespace TransferData.Model
 {
     public record SchemaInfo
     {
@@ -21,6 +23,83 @@
         {
             return String.Join(", ",
                 this.Fields.Select(x => $"T_Source.{x.FieldName}"));
+        }
+
+        public string FieldsWithQuotes(List<string> input, DbType dbType)
+        {
+            List<List<string>> quetes = new List<List<string>>()
+            {
+                //new List<string>() //PostgreSQL
+                //{
+                //    "character varying",
+                //    "varchar",
+                //    "char",
+                //    "character",
+                //    "text",
+                //    "timestamp",
+                //    "date",
+                //    "time",
+                //    "interval"
+                //},
+                //new List<string>() //MSSQL
+                //{
+                //    "varchar",
+                //    "date",
+                //    "datetime",
+                //    "datetime2",
+                //    "datetimeoffset",
+                //    "smalldatetime",
+                //    "time",
+                //    "timestamp",
+                //    "char",
+                //    "varchar",
+                //    "text",
+                //    "nvarchar",
+                //    "nchar",
+                //    "ntext",
+                //}
+
+                new List<string>() //PostgreSQL
+                {
+                    "smallint",
+                    "integer",
+                    "bigint",
+                    "decimal",
+                    "numeric",
+                    "real",
+                    "double precision",
+                    "bytea"
+
+                },
+                new List<string>() //MSSQL
+                {
+                    "bigint",
+                    "int",
+                    "smallint",
+                    "tinyint",
+                    "bit",
+                    "decimal",
+                    "numeric",
+                    "money",
+                    "smallmoney",
+                    "float",
+                    "real",
+                    "binary",
+                    "varbinary"
+
+                }
+            };
+
+            string result = String.Empty;
+
+            for (int i = 0; i < input.Count; i++)
+                if (!quetes[(int)dbType].Contains(Fields[i].FieldType) && input[i] != "null")
+                    result += $"'{input[i]}' as {Fields[i].FieldName}, ";
+                else
+                    result += $"{input[i]} as {Fields[i].FieldName}, ";
+
+            return result.Remove(result.Length - 2, 2);
+
         }
 
     }
