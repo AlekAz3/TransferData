@@ -19,10 +19,6 @@ namespace TransferData.Model
         {
             var schema = _metadataExtractor.GetTableSchema(tableName);
             var command = new StringBuilder();
-            var columns = schema.Fields.Select(x => x.FieldName).ToList();
-            string firsColumn = columns[0];
-            columns.RemoveAt(0);
-            string columsJoin = String.Join(", ", columns);
 
             command.AppendLine($"merge {schema.TableName} AS T_Base ");
             command.AppendLine($"using #Temp{schema.TableName} AS T_Source ");
@@ -30,7 +26,7 @@ namespace TransferData.Model
             command.AppendLine($"when matched then ");
             command.AppendLine($"update set {schema.SetValuesSubQuery()} ");
             command.AppendLine($"when not matched then ");
-            command.AppendLine($"insert ({String.Join(", ", columns)}) ");
+            command.AppendLine($"insert ({String.Join(", ", schema.Fields.Select(x => x.FieldName).ToList())}) ");
             command.AppendLine($"values ({schema.ColumnsWithTableName()}) ");
             command.AppendLine($";");
             command.AppendLine($"--when not matched by source then delete");

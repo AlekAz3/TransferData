@@ -46,11 +46,10 @@ namespace TransferData.Model
         public string GenerateTempTableQuary(string tableName)
         {
             var schema = _metadataExtractor.GetTableSchema(tableName);
-            string columnsJoin = String.Join(", ", schema.Fields.Select(x => x.FieldName));
             var tableData = _dataExtractor.ConvertDataTableToList(tableName);
 
             var command = new StringBuilder();
-            command.AppendLine($"select {columnsJoin} into temp table Temp{schema.TableName} from");
+            command.AppendLine($"select {String.Join(", ", schema.Fields.Select(x => x.FieldName))} into temp table Temp{schema.TableName} from");
             command.AppendLine("( ");
             for (int i = 0; i < tableData.Count - 1; i++)
                 command.AppendLine($"select {schema.FieldsWithQuotes(tableData[i], _data.type)} union all");
