@@ -28,16 +28,17 @@ namespace TransferData.Model
             command.AppendLine($"using #Temp{schema.TableName} AS T_Source ");
             command.AppendLine($"on (T_Base.{schema.Fields[0].FieldName} = T_Source.{schema.Fields[0].FieldName}) ");
             command.AppendLine($"when matched then ");
-            command.AppendLine($"update set {DbDataHelper.CompareColumns(schema)} ");
+            command.AppendLine($"update set {schema.SetValuesSubQuery()} ");
             command.AppendLine($"when not matched then ");
             command.AppendLine($"insert ({String.Join(", ", columns)}) ");
-            command.AppendLine($"values ({DbDataHelper.ColumnsWithTableName("T_Source", schema)}) ");
+            command.AppendLine($"values ({schema.ColumnsWithTableName()}) ");
             command.AppendLine($";");
             command.AppendLine($"--when not matched by source then delete");
             
             return command.ToString();
 
         }
+
 
         public string GenerateTempTableQuary(string tableName)
         {

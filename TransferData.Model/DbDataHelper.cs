@@ -3,29 +3,6 @@
     public static class DbDataHelper
     {
 
-        public static string CompareColumns(SchemaInfo schema)
-        {
-            string line = String.Empty;
-            for (int i = 1; i < schema.Fields.Count; i++)
-            {
-                line += $"{schema.Fields[i].FieldName} = T_Source.{schema.Fields[i].FieldName}, ";
-            }
-
-            return line.Remove(line.Length - 2, 2);
-        }
-
-        public static string ColumnsWithTableName(string tableName, SchemaInfo schema)
-        {
-            string line = String.Empty;
-
-            for (int i = 1; i < schema.Fields.Count; i++)
-            {
-                line += $"{tableName}.{schema.Fields[i].FieldName}, ";
-            }
-
-            return line.Remove(line.Length - 2, 2);
-        }
-
         public static string FieldsWithQuotes(List<string> input, SchemaInfo schema, DbType dbType)
         {
             List<List<string>> quetes = new List<List<string>>()
