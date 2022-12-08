@@ -25,7 +25,7 @@ namespace TransferData.Model
                 this.Fields.Select(x => $"T_Source.{x.FieldName}"));
         }
 
-        public string FieldsWithQuotes(List<string> input, DbType dbType)
+        internal string FieldsWithQuotes(List<string> input, DbType dbType)
         {
             List<List<string>> quetes = new List<List<string>>()
             {

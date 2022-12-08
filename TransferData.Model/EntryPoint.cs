@@ -54,7 +54,7 @@ namespace TransferData.Model
 
         }
 
-        public List<string> GetQueriesTempTable(string tableName)
+        internal List<string> GetQueriesTempTable(string tableName)
         {
             var tables = _metadataExtractor.GetTableDependencyTables(tableName);
             tables.Reverse();
@@ -66,7 +66,7 @@ namespace TransferData.Model
             return result;
         }
 
-        public List<string> GetMergeQuaries(string tableName)
+        internal List<string> GetMergeQuaries(string tableName)
         {
             var tables = _metadataExtractor.GetTableDependencyTables(tableName);
             tables.Reverse();
