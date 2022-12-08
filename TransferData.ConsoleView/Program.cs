@@ -54,12 +54,12 @@ namespace TransferData.ConsoleView
                                 throw new KeyNotFoundException();
                         }
                     });
-                    services.AddTransient<Worker>();
+                    services.AddTransient<EntryPoint>();
                 })
                 .UseSerilog()
                 .Build();
 
-            var svc = ActivatorUtilities.CreateInstance<Worker>(host.Services);
+            var svc = ActivatorUtilities.CreateInstance<EntryPoint>(host.Services);
             svc.Run(tableName, dbType);
         }
     }

@@ -3,15 +3,15 @@ using Microsoft.Extensions.Logging;
 
 namespace TransferData.Model
 {
-    public class Worker
+    public class EntryPoint
     {
         private readonly DataContext _data;
         private readonly MetadataExtractor _metadataExtractor;
         private readonly IConfiguration _config;
-        private readonly ILogger<Worker> _log;
+        private readonly ILogger<EntryPoint> _log;
         private readonly ITransfer _transfer;
 
-        public Worker(DataContext data, MetadataExtractor metadataExtractor, IConfiguration config, ILogger<Worker> log, ITransfer transfer)
+        public EntryPoint(DataContext data, MetadataExtractor metadataExtractor, IConfiguration config, ILogger<EntryPoint> log, ITransfer transfer)
         {
             _data = data;
             _metadataExtractor = metadataExtractor;
