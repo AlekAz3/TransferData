@@ -1,6 +1,4 @@
-﻿using Microsoft.VisualBasic.FileIO;
-
-namespace TransferData.Model
+﻿namespace TransferData.Model
 {
     public record SchemaInfo
     {
