@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using TransferData.Model.Infrastructure;
+using TransferData.Model.Models;
 
-namespace TransferData.Model
+namespace TransferData.Model.Services
 {
     public class MetadataExtractor
     {

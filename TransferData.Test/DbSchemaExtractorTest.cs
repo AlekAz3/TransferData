@@ -1,5 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
+using TransferData.Model.Infrastructure;
+using TransferData.Model.Models;
 
 namespace TransferData.Test
 {

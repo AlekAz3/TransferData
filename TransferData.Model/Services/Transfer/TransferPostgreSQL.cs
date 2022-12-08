@@ -1,6 +1,7 @@
 ﻿using System.Text;
+using TransferData.Model.Infrastructure;
 
-namespace TransferData.Model
+namespace TransferData.Model.Services.Transfer
 {
     public class TransferPostgreSQL : ITransfer
     {
@@ -22,7 +23,7 @@ namespace TransferData.Model
             var columns = schema.Fields.Select(x => x.FieldName).ToList();
             string firsColumn = columns[0];
             columns.RemoveAt(0);
-            string columsJoin = String.Join(", ", columns);
+            string columsJoin = string.Join(", ", columns);
 
             command.AppendLine($"with upsert({firsColumn}) as");
             command.AppendLine($"(");
@@ -46,10 +47,11 @@ namespace TransferData.Model
         public string GenerateTempTableQuary(string tableName)
         {
             var schema = _metadataExtractor.GetTableSchema(tableName);
+            string columnsJoin = string.Join(", ", schema.Fields.Select(x => x.FieldName));
             var tableData = _dataExtractor.ConvertDataTableToList(tableName);
 
             var command = new StringBuilder();
-            command.AppendLine($"select {String.Join(", ", schema.Fields.Select(x => x.FieldName))} into temp table Temp{schema.TableName} from");
+            command.AppendLine($"select {columnsJoin} into temp table Temp{schema.TableName} from");
             command.AppendLine("( ");
             for (int i = 0; i < tableData.Count - 1; i++)
                 command.AppendLine($"select {schema.FieldsWithQuotes(tableData[i], _data.type)} union all");

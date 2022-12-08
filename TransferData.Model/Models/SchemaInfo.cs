@@ -1,4 +1,4 @@
-﻿namespace TransferData.Model
+﻿namespace TransferData.Model.Models
 {
     public record SchemaInfo
     {
@@ -13,14 +13,14 @@
 
         internal string SetValuesSubQuery()
         {
-            return String.Join(", ",
-                this.Fields.Select(x => $"{x.FieldName} = T_Source.{x.FieldName}"));
+            return string.Join(", ",
+                Fields.Select(x => $"{x.FieldName} = T_Source.{x.FieldName}"));
         }
 
         internal string ColumnsWithTableName()
         {
-            return String.Join(", ",
-                this.Fields.Select(x => $"T_Source.{x.FieldName}"));
+            return string.Join(", ",
+                Fields.Select(x => $"T_Source.{x.FieldName}"));
         }
 
         internal string FieldsWithQuotes(List<string> input, DbType dbType)

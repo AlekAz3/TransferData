@@ -1,7 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using TransferData.Model.Infrastructure;
+using TransferData.Model.Models;
+using TransferData.Model.Services.Transfer;
 
-namespace TransferData.Model
+namespace TransferData.Model.Services
 {
     public class EntryPoint
     {
@@ -28,20 +31,17 @@ namespace TransferData.Model
                 return;
             }
 
-
-
-
             var queries = GetQueries(tableName);
 
             string path = $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\{tableName}_Transfer_{DateOnly.FromDateTime(DateTime.Now)}.txt";
-            
+
             using (var file = new StreamWriter(path, false))
             {
                 file.WriteLine($"--Program Output: table {tableName} from {_config.GetValue<DbType>("AppDbOptions:DbType")} to {dbType} ");
-                
+
                 foreach (var item in queries)
                 {
-                    file.WriteLine($"--________Table: {item.TableName}____________");
+                    file.WriteLine($"--======= Table: {item.TableName} =========");
                     file.WriteLine(item.TempTableQuery);
                     file.WriteLine(item.MurgeQuery);
                     file.WriteLine("");
@@ -58,7 +58,7 @@ namespace TransferData.Model
             var result = new List<TableQuery>();
             foreach (var table in tables)
             {
-                result.Add( new TableQuery(table,_transfer.GenerateMergeQuery(table), _transfer.GenerateTempTableQuary(table)));
+                result.Add(new TableQuery(table, _transfer.GenerateMergeQuery(table), _transfer.GenerateTempTableQuary(table)));
             }
             return result;
         }

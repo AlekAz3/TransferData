@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Data;
 using System.Data.Common;
+using TransferData.Model.Infrastructure;
+using TransferData.Model.Models;
 
-namespace TransferData.Model
+namespace TransferData.Model.Services
 {
     public class DbDataExtractor
     {
@@ -15,7 +17,7 @@ namespace TransferData.Model
             _metadataExtractor = metadataExtractor;
         }
 
-        private string GenerateSelectQuary(SchemaInfo schema) => $"select {String.Join(", ", schema.Fields.Select(x => x.FieldName).ToList())} from {schema.TableName}";
+        private string GenerateSelectQuary(SchemaInfo schema) => $"select {string.Join(", ", schema.Fields.Select(x => x.FieldName).ToList())} from {schema.TableName}";
 
         private DataTable GetDataTable(string tableName)
         {

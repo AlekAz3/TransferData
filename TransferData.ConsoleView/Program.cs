@@ -3,7 +3,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
-using TransferData.Model;
+using TransferData.Model.Infrastructure;
+using TransferData.Model.Models;
+using TransferData.Model.Services;
+using TransferData.Model.Services.Transfer;
 
 namespace TransferData.ConsoleView
 {
