@@ -28,56 +28,40 @@ namespace TransferData.Model
                 return;
             }
 
-            var tempTableQueries = GetQueriesTempTable(tableName);
-            var mergeQueries = GetMergeQuaries(tableName);
+
+
+
+            var queries = GetQueries(tableName);
 
             string path = $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\{tableName}_Transfer_{DateOnly.FromDateTime(DateTime.Now)}.txt";
             
             using (var file = new StreamWriter(path, false))
             {
                 file.WriteLine($"--Program Output: table {tableName} from {_config.GetValue<DbType>("AppDbOptions:DbType")} to {dbType} ");
-                file.WriteLine($"--Create temp table: ");
-                foreach (var item in tempTableQueries)
+                
+                foreach (var item in queries)
                 {
-                    file.WriteLine(item);
+                    file.WriteLine($"--Create temp table: ");
+                    file.WriteLine(item.TempTableQuery);
+                    file.WriteLine($"--Create merge query: ");
+                    file.WriteLine(item.MurgeQuery);
+                    file.WriteLine("");
                 }
-
-                file.WriteLine($"--Create merge query: ");
-
-                foreach (var item in mergeQueries)
-                {
-                    file.WriteLine(item);
-                }
-
             }
             _log.LogInformation($"File created!");
 
         }
 
-        internal List<string> GetQueriesTempTable(string tableName)
+        internal List<TableQuery> GetQueries(string tableName)
         {
             var tables = _metadataExtractor.GetTableDependencyTables(tableName);
             tables.Reverse();
-            var result = new List<string>();
+            var result = new List<TableQuery>();
             foreach (var table in tables)
             {
-                result.Add(_transfer.GenerateTempTableQuary(table));
+                result.Add( new TableQuery(_transfer.GenerateMergeQuery(table), _transfer.GenerateTempTableQuary(table)));
             }
             return result;
         }
-
-        internal List<string> GetMergeQuaries(string tableName)
-        {
-            var tables = _metadataExtractor.GetTableDependencyTables(tableName);
-            tables.Reverse();
-            var result = new List<string>();
-            foreach (var table in tables)
-            {
-                result.Add(_transfer.GenerateMergeQuery(table));
-            }
-            return result;
-        }
-
-
     }
 }
