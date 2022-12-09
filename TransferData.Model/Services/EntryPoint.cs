@@ -8,15 +8,15 @@ namespace TransferData.Model.Services
 {
     public class EntryPoint
     {
-        private readonly DataContext _data;
+        private readonly DataContext _dataContext;
         private readonly MetadataExtractor _metadataExtractor;
         private readonly IConfiguration _config;
         private readonly ILogger<EntryPoint> _log;
         private readonly ITransfer _transfer;
 
-        public EntryPoint(DataContext data, MetadataExtractor metadataExtractor, IConfiguration config, ILogger<EntryPoint> log, ITransfer transfer)
+        public EntryPoint(DataContext dataContext, MetadataExtractor metadataExtractor, IConfiguration config, ILogger<EntryPoint> log, ITransfer transfer)
         {
-            _data = data;
+            _dataContext = dataContext;
             _metadataExtractor = metadataExtractor;
             _config = config;
             _log = log;
@@ -25,7 +25,7 @@ namespace TransferData.Model.Services
 
         public void Run(string tableName, DbType dbType)
         {
-            if (!_data.Database.CanConnect())
+            if (!_dataContext.Database.CanConnect())
             {
                 _log.LogError("Can't connect to db");
                 return;

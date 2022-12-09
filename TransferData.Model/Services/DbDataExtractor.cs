@@ -8,12 +8,12 @@ namespace TransferData.Model.Services
 {
     public class DbDataExtractor
     {
-        private readonly DataContext _data;
+        private readonly DataContext _dataContext;
         private readonly MetadataExtractor _metadataExtractor;
 
-        public DbDataExtractor(DataContext data, MetadataExtractor metadataExtractor)
+        public DbDataExtractor(DataContext dataContext, MetadataExtractor metadataExtractor)
         {
-            _data = data;
+            _dataContext = dataContext;
             _metadataExtractor = metadataExtractor;
         }
 
@@ -25,11 +25,11 @@ namespace TransferData.Model.Services
 
             string sqlQuery = GenerateSelectQuary(schema);
 
-            var dbFactory = DbProviderFactories.GetFactory(_data.Database.GetDbConnection());
+            var dbFactory = DbProviderFactories.GetFactory(_dataContext.Database.GetDbConnection());
 
             using (var cmd = dbFactory.CreateCommand())
             {
-                cmd.Connection = _data.Database.GetDbConnection();
+                cmd.Connection = _dataContext.Database.GetDbConnection();
                 cmd.CommandType = CommandType.Text;
                 cmd.CommandText = sqlQuery;
                 using (var adapter = dbFactory.CreateDataAdapter())

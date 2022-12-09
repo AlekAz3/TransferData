@@ -7,13 +7,13 @@ namespace TransferData.Model.Services.Transfer
     {
         private readonly DbDataExtractor _dataExtractor;
         private readonly MetadataExtractor _metadataExtractor;
-        private readonly DataContext _data;
+        private readonly DataContext _dataContext;
 
-        public TransferPostgreSQL(DbDataExtractor dataExtractor, MetadataExtractor metadataExtractor, DataContext data)
+        public TransferPostgreSQL(DbDataExtractor dataExtractor, MetadataExtractor metadataExtractor, DataContext dataContext)
         {
             _dataExtractor = dataExtractor;
             _metadataExtractor = metadataExtractor;
-            _data = data;
+            _dataContext = dataContext;
         }
 
         public string GenerateMergeQuery(string tableName)
@@ -54,8 +54,8 @@ namespace TransferData.Model.Services.Transfer
             sqlQueryString.AppendLine($"select {columnsJoin} into temp table Temp{schema.TableName} from");
             sqlQueryString.AppendLine("( ");
             for (int i = 0; i < tableData.Count - 1; i++)
-                sqlQueryString.AppendLine($"select {schema.FieldsWithQuotes(tableData[i], _data.type)} union all");
-            sqlQueryString.AppendLine($"select {schema.FieldsWithQuotes(tableData[tableData.Count - 1], _data.type)}");
+                sqlQueryString.AppendLine($"select {schema.FieldsWithQuotes(tableData[i], _dataContext.type)} union all");
+            sqlQueryString.AppendLine($"select {schema.FieldsWithQuotes(tableData[tableData.Count - 1], _dataContext.type)}");
 
             sqlQueryString.AppendLine(") as dt;");
 

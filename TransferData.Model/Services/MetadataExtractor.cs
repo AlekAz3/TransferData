@@ -7,30 +7,30 @@ namespace TransferData.Model.Services
 {
     public class MetadataExtractor
     {
-        private readonly DataContext _data;
+        private readonly DataContext _dataContext;
 
-        public MetadataExtractor(DataContext data)
+        public MetadataExtractor(DataContext dataContext)
         {
-            _data = data;
+            _dataContext = dataContext;
         }
 
         internal List<string> GetForiegnKeyColumns(string tableName)
         {
-            var result = _data.Database.SqlQueryRaw<string>($"select COLUMN_NAME from ( select CONSTRAINT_NAME from INFORMATION_SCHEMA.TABLE_CONSTRAINTS where CONSTRAINT_TYPE = 'FOREIGN KEY') as a, INFORMATION_SCHEMA.KEY_COLUMN_USAGE as b where a.CONSTRAINT_NAME = b.CONSTRAINT_NAME and TABLE_NAME = '{tableName}';").ToList();
+            var result = _dataContext.Database.SqlQueryRaw<string>($"select COLUMN_NAME from ( select CONSTRAINT_NAME from INFORMATION_SCHEMA.TABLE_CONSTRAINTS where CONSTRAINT_TYPE = 'FOREIGN KEY') as a, INFORMATION_SCHEMA.KEY_COLUMN_USAGE as b where a.CONSTRAINT_NAME = b.CONSTRAINT_NAME and TABLE_NAME = '{tableName}';").ToList();
 
             return result;
         }
 
         internal string GetPrimaryKeyColumn(string tableName)
         {
-            string column = _data.Database.SqlQueryRaw<string>($"select COLUMN_NAME from ( select CONSTRAINT_NAME from INFORMATION_SCHEMA.TABLE_CONSTRAINTS where CONSTRAINT_TYPE = 'PRIMARY KEY') as a, INFORMATION_SCHEMA.KEY_COLUMN_USAGE as b where a.CONSTRAINT_NAME = b.CONSTRAINT_NAME and TABLE_NAME = '{tableName}';").ToList()[0];
+            string column = _dataContext.Database.SqlQueryRaw<string>($"select COLUMN_NAME from ( select CONSTRAINT_NAME from INFORMATION_SCHEMA.TABLE_CONSTRAINTS where CONSTRAINT_TYPE = 'PRIMARY KEY') as a, INFORMATION_SCHEMA.KEY_COLUMN_USAGE as b where a.CONSTRAINT_NAME = b.CONSTRAINT_NAME and TABLE_NAME = '{tableName}';").ToList()[0];
             return column;
         }
 
 
         internal string GetParentTable(string foreignColumn)
         {
-            string result = _data.Database.SqlQueryRaw<string>($"select TABLE_NAME, COLUMN_NAME from (select CONSTRAINT_NAME from INFORMATION_SCHEMA.TABLE_CONSTRAINTS where CONSTRAINT_TYPE = 'PRIMARY KEY') as a, INFORMATION_SCHEMA.KEY_COLUMN_USAGE as b where a.CONSTRAINT_NAME = b.CONSTRAINT_NAME and COLUMN_NAME = '{foreignColumn}';").ToList()[0];
+            string result = _dataContext.Database.SqlQueryRaw<string>($"select TABLE_NAME, COLUMN_NAME from (select CONSTRAINT_NAME from INFORMATION_SCHEMA.TABLE_CONSTRAINTS where CONSTRAINT_TYPE = 'PRIMARY KEY') as a, INFORMATION_SCHEMA.KEY_COLUMN_USAGE as b where a.CONSTRAINT_NAME = b.CONSTRAINT_NAME and COLUMN_NAME = '{foreignColumn}';").ToList()[0];
 
 
             return result;
@@ -79,7 +79,7 @@ namespace TransferData.Model.Services
 
         internal SchemaInfo GetTableSchema(string tableName)
         {
-            var informationSchema = _data.Schema
+            var informationSchema = _dataContext.Schema
                 .FromSqlRaw($"select table_schema, table_name, column_name, data_type from information_schema.columns where table_name = '{tableName}' order by ordinal_position")
                 .ToList();
 
