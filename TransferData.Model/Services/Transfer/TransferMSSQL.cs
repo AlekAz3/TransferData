@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using TransferData.Model.Infrastructure;
+using TransferData.Model.Models;
 
 namespace TransferData.Model.Services.Transfer
 {
@@ -23,9 +24,9 @@ namespace TransferData.Model.Services.Transfer
             var columns = schema.Fields.Select(x => x.FieldName).ToList();
             string primaryKey = _metadataExtractor.GetPrimaryKeyColumn(tableName);
 
-            sqlQueryString.AppendLine($"merge {schema.TableName} AS T_Base ");
+            sqlQueryString.AppendLine($"merge {schema.TableName} AS {Constants.TableBaseName} ");
             sqlQueryString.AppendLine($"using #Temp{schema.TableName} AS T_Source ");
-            sqlQueryString.AppendLine($"on (T_Base.{primaryKey} = T_Source.{primaryKey}) ");
+            sqlQueryString.AppendLine($"on ({Constants.TableBaseName}.{primaryKey} = {Constants.TableSourceName}.{primaryKey}) ");
             sqlQueryString.AppendLine($"when matched then ");
             sqlQueryString.AppendLine($"update set {schema.SetValuesSubQuery()} ");
             sqlQueryString.AppendLine($"when not matched then ");

@@ -64,6 +64,8 @@
             }
         };
 
+        public static readonly string TableBaseName = "T_Base";
         public static readonly string TableSourceName = "T_Source";
+
     }
 }
