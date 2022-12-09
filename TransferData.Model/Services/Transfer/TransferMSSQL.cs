@@ -31,7 +31,7 @@ namespace TransferData.Model.Services.Transfer
             sqlQueryString.AppendLine($"when not matched then ");
             sqlQueryString.AppendLine($"insert ({string.Join(", ", columns)}) ");
             sqlQueryString.AppendLine($"values ({schema.ColumnsWithTableName()}) ");
-            sqlQueryString.AppendLine($"when not matched by source then delete");
+            sqlQueryString.AppendLine($"when not matched by source then delete;");
 
             return sqlQueryString.ToString();
 
