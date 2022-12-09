@@ -16,7 +16,7 @@
             if (dbType == DbType.PostgreSQL && FieldType == "date")
                 return $"to_date('{value}', 'DD-MM-YYYY H:MI:SS')";
 
-            if (! Constants.Quotes[(int)dbType].Contains(FieldType) && value != "null")
+            if (! Constants.WithoutQuotes[(int)dbType].Contains(FieldType) && value != "null")
                 return $"'{value}'";
             
             return $"{value}";

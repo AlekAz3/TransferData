@@ -2,39 +2,8 @@
 {
     public class Constants
     {
-        public static readonly List<List<string>> Quotes = new List<List<string>>()
+        public static readonly List<List<string>> WithoutQuotes = new List<List<string>>()
         {
-                //new List<string>() //PostgreSQL
-                //{
-                //    "character varying",
-                //    "varchar",
-                //    "char",
-                //    "character",
-                //    "text",
-                //    "timestamp",
-                //    "date",
-                //    "time",
-                //    "interval"
-                //},
-                //new List<string>() //MSSQL
-                //{
-                //    "varchar",
-                //    "date",
-                //    "datetime",
-                //    "datetime2",
-                //    "datetimeoffset",
-                //    "smalldatetime",
-                //    "time",
-                //    "timestamp",
-                //    "char",
-                //    "varchar",
-                //    "text",
-                //    "nvarchar",
-                //    "nchar",
-                //    "ntext",
-                //}
-
-
             new List<string>() //PostgreSQL
             {
                 "smallint",
