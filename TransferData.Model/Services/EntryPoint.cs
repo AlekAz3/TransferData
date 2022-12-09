@@ -43,7 +43,7 @@ namespace TransferData.Model.Services
                 {
                     file.WriteLine($"--======= Table: {item.TableName} =========");
                     file.WriteLine(item.TempTableQuery);
-                    file.WriteLine(item.MurgeQuery);
+                    file.WriteLine(item.MergeQuery);
                     file.WriteLine("");
                 }
             }

@@ -3,13 +3,13 @@
     public record TableQuery
     {
         public string TableName { get; set; }
-        public string MurgeQuery { get; set; }
+        public string MergeQuery { get; set; }
         public string TempTableQuery { get; set; }
 
-        public TableQuery(string tableName, string murgeQuery, string tempTableQuery)
+        public TableQuery(string tableName, string mergeQuery, string tempTableQuery)
         {
             TableName = tableName;
-            MurgeQuery = murgeQuery;
+            MergeQuery = mergeQuery;
             TempTableQuery = tempTableQuery;
         }
     }
