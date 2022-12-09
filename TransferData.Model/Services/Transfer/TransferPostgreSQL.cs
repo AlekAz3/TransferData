@@ -21,25 +21,22 @@ namespace TransferData.Model.Services.Transfer
             var schema = _metadataExtractor.GetTableSchema(tableName);
             var sqlQueryString = new StringBuilder();
             var columns = schema.Fields.Select(x => x.FieldName).ToList();
-            string firsColumn = columns[0];
-            columns.RemoveAt(0);
+            string primaryKey = _metadataExtractor.GetPrimaryKeyColumn(tableName);
             string columsJoin = string.Join(", ", columns);
 
-            sqlQueryString.AppendLine($"with upsert({firsColumn}) as");
+            sqlQueryString.AppendLine($"with upsert({primaryKey}) as");
             sqlQueryString.AppendLine($"(");
             sqlQueryString.AppendLine($"insert into {schema.TableName} ({columsJoin})");
             sqlQueryString.AppendLine($"select {columsJoin} from Temp{schema.TableName}");
-            sqlQueryString.AppendLine($"on conflict ({firsColumn}) do update set ");
+            sqlQueryString.AppendLine($"on conflict ({primaryKey}) do update set ");
             for (int i = 0; i < columns.Count() - 1; i++)
             {
                 sqlQueryString.AppendLine($"{columns[i]} = excluded.{columns[i]},");
             }
-
             sqlQueryString.AppendLine($"{columns[columns.Count() - 1]} = excluded.{columns[columns.Count() - 1]}");
 
-            sqlQueryString.AppendLine($"returning {firsColumn} )");
-            sqlQueryString.AppendLine($";");
-            sqlQueryString.AppendLine($"--delete from {schema.TableName} where {firsColumn} not in (select {firsColumn} from upsert);");
+            sqlQueryString.AppendLine($"returning {primaryKey} )");
+            sqlQueryString.AppendLine($"delete from {schema.TableName} where {primaryKey} not in (select {primaryKey} from upsert);");
             return sqlQueryString.ToString();
         }
 
