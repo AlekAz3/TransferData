@@ -19,7 +19,8 @@
             "varbinary",
             "integer",
             "double precision",
-            "bytea"
+            "bytea",
+            "double"
         };
 
         public static readonly string TableBaseName = "T_Base";

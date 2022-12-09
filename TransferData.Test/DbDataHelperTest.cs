@@ -7,31 +7,23 @@ using System.Text;
 using System.Threading.Tasks;
 using TransferData.Model.Infrastructure;
 using TransferData.Model.Models;
+using TransferData.Model.Services;
 
 namespace TransferData.Test
 {
     public class DbDataHelperTest
     {
-        private readonly IConfiguration _config;
-        private readonly DbSchemaExtractor _extractor;
-        private readonly DataContext _data;
-
         public DbDataHelperTest()
         {
-            var builder = new ConfigurationBuilder()
-                //.AddInMemoryCollection()
-                .AddJsonFile($"appsettings.json", optional: false, reloadOnChange: true);
-            _config = builder.Build();
-            _data = new DataContext(new NullLogger<DataContext>(), _config);
-            _extractor = new DbSchemaExtractor(_data);
+
         }
         [Fact]
         public void CompareColumns_Test()
         {
             SchemaInfo schemaInfo = new SchemaInfo("table1", new List<FieldInfo>() { new FieldInfo("col1", "a"), new FieldInfo("col2", "a"), new FieldInfo("col3", "a") });
-            var result = DbDataHelper.SetValuesSubQuery(schemaInfo);
+            var result = schemaInfo.SetValuesSubQuery();
 
-            string expect = "col2 = T_Source.col2, col3 = T_Source.col3";
+            string expect = "col1 = T_Source.col1, col2 = T_Source.col2, col3 = T_Source.col3";
 
             Assert.Equal(expect, result);
         }
@@ -41,9 +33,9 @@ namespace TransferData.Test
         {
             SchemaInfo schemaInfo = new SchemaInfo("table1", new List<FieldInfo>() { new FieldInfo("col1", "a"), new FieldInfo("col2", "a"), new FieldInfo("col3", "a") });
 
-            var result = DbDataHelper.ColumnsWithTableName("Table", schemaInfo);
+            var result = schemaInfo.ColumnsWithTableName();
 
-            string expect = "Table.col2, Table.col3";
+            string expect = "T_Source.col2, T_Source.col3";
 
             Assert.Equal(expect, result);
         }
@@ -53,7 +45,7 @@ namespace TransferData.Test
         {
             SchemaInfo schemaInfo = new SchemaInfo("table1", new List<FieldInfo>() { new FieldInfo("col1", "int"), new FieldInfo("col2", "varchar"), new FieldInfo("col3", "double") });
             List<string> data = new List<string>() { "1", "twq", "4.6"};
-            var result = DbDataHelper.FieldsWithQuotes(data, schemaInfo, DbType.MSSQL);
+            var result = schemaInfo.FieldsWithQuotes(data, DbType.MSSQL);
             string expect = $"1 as col1, 'twq' as col2, 4.6 as col3";
 
             Assert.Equal(expect, result);
