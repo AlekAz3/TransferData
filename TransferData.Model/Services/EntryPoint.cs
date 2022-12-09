@@ -23,7 +23,7 @@ namespace TransferData.Model.Services
             _transfer = transfer;
         }
 
-        public void Run(string tableName, DbType dbType)
+        public void CreateFile(string tableName, DbType dbType)
         {
             if (!_dataContext.Database.CanConnect())
             {

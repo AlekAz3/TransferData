@@ -61,7 +61,7 @@ namespace TransferData.ConsoleView
                 .Build();
 
             var svc = ActivatorUtilities.CreateInstance<EntryPoint>(host.Services);
-            svc.Run(tableName, dbType);
+            svc.CreateFile(tableName, dbType);
         }
     }
 
