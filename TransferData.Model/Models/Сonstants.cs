@@ -2,35 +2,24 @@
 {
     public class Constants
     {
-        public static readonly List<List<string>> WithoutQuotes = new List<List<string>>()
+        public static readonly List<string> WithoutQuotes = new List<string>()
         {
-            new List<string>() //PostgreSQL
-            {
-                "smallint",
-                "integer",
-                "bigint",
-                "decimal",
-                "numeric",
-                "real",
-                "double precision",
-                "bytea"
-            },
-            new List<string>() //MSSQL
-            {
-                "bigint",
-                "int",
-                "smallint",
-                "tinyint",
-                "bit",
-                "decimal",
-                "numeric",
-                "money",
-                "smallmoney",
-                "float",
-                "real",
-                "binary",
-                "varbinary"
-            }
+            "bigint",
+            "int",
+            "smallint",
+            "tinyint",
+            "bit",
+            "decimal",
+            "numeric",
+            "money",
+            "smallmoney",
+            "float",
+            "real",
+            "binary",
+            "varbinary",
+            "integer",
+            "double precision",
+            "bytea"
         };
 
         public static readonly string TableBaseName = "T_Base";
