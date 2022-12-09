@@ -12,10 +12,8 @@ namespace TransferData.ConsoleView
 {
     public class Program
     {
-        static void Main()
+        static void Main(string[] args)
         {
-            var args = "-t table1 -d MSSQL".Split();
-
             var builder = new ConfigurationBuilder();
 
             Log.Logger = new LoggerConfiguration()

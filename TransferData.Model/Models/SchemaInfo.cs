@@ -14,13 +14,13 @@
         internal string SetValuesSubQuery()
         {
             return string.Join(", ",
-                Fields.Select(x => $"{x.FieldName} = T_Source.{x.FieldName}"));
+                Fields.Select(x => $"{x.FieldName} = {Constants.TableSourceName}.{x.FieldName}"));
         }
 
         internal string ColumnsWithTableName()
         {
             return string.Join(", ",
-                Fields.Select(x => $"T_Source.{x.FieldName}"));
+                Fields.Select(x => $"{Constants.TableSourceName}.{x.FieldName}"));
         }
 
         internal string FieldsWithQuotes(List<string> input, DbType dbType)
