@@ -11,7 +11,7 @@
             FieldType = fieldType;
         }
 
-        internal string dataCheckQuotes(string value, DbType dbType)
+        internal string DataCheckQuotes(string value, DbType dbType)
         {
             if (dbType == DbType.PostgreSQL && FieldType == "date")
                 return $"to_date('{value}', 'DD-MM-YYYY H:MI:SS')";

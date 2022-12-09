@@ -29,7 +29,7 @@
 
             for (int i = 0; i < input.Count; i++)
             {
-                result.Add($"{Fields[i].dataCheckQuotes(input[i], dbType)} as {Fields[i].FieldName}");
+                result.Add($"{Fields[i].DataCheckQuotes(input[i], dbType)} as {Fields[i].FieldName}");
             }
 
             return string.Join(", ", result);
