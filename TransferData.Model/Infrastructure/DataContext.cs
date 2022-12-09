@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using TransferData.Model.Models;
 
-namespace TransferData.Model
+namespace TransferData.Model.Infrastructure
 {
     public class DataContext : DbContext
     {
@@ -12,7 +13,7 @@ namespace TransferData.Model
 
         public DbType type { get; private set; }
 
-        public DataContext(ILogger<DataContext> log,IConfiguration config)
+        public DataContext(ILogger<DataContext> log, IConfiguration config)
         {
             _config = config;
             _logger = log;
@@ -36,7 +37,7 @@ namespace TransferData.Model
                 default:
                     break;
             }
-            
+
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

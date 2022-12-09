@@ -1,4 +1,4 @@
-﻿namespace TransferData.Model
+﻿namespace TransferData.Model.Models
 {
     public record FieldInfo
     {

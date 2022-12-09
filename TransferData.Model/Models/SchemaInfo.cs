@@ -1,32 +1,29 @@
-﻿namespace TransferData.Model
+﻿namespace TransferData.Model.Models
 {
-    public static class DbDataHelper
+    public record SchemaInfo
     {
+        public string TableName { get; init; }
+        public List<FieldInfo> Fields { get; init; }
 
-        public static string CompareColumns(SchemaInfo schema)
+        public SchemaInfo(string tableName, List<FieldInfo> fields)
         {
-            string line = String.Empty;
-            for (int i = 1; i < schema.Fields.Count; i++)
-            {
-                line += $"{schema.Fields[i].FieldName} = T_Source.{schema.Fields[i].FieldName}, ";
-            }
-
-            return line.Remove(line.Length - 2, 2);
+            TableName = tableName;
+            Fields = fields;
         }
 
-        public static string ColumnsWithTableName(string tableName, SchemaInfo schema)
+        internal string SetValuesSubQuery()
         {
-            string line = String.Empty;
-
-            for (int i = 1; i < schema.Fields.Count; i++)
-            {
-                line += $"{tableName}.{schema.Fields[i].FieldName}, ";
-            }
-
-            return line.Remove(line.Length - 2, 2);
+            return string.Join(", ",
+                Fields.Select(x => $"{x.FieldName} = T_Source.{x.FieldName}"));
         }
 
-        public static string FieldsWithQuotes(List<string> input, SchemaInfo schema, DbType dbType)
+        internal string ColumnsWithTableName()
+        {
+            return string.Join(", ",
+                Fields.Select(x => $"T_Source.{x.FieldName}"));
+        }
+
+        internal string FieldsWithQuotes(List<string> input, DbType dbType)
         {
             List<List<string>> quetes = new List<List<string>>()
             {
@@ -91,17 +88,17 @@
                 }
             };
 
-            var columns = schema.Fields;
-            string result = String.Empty;
+            List<string> result = new List<string>();
 
             for (int i = 0; i < input.Count; i++)
-                if (!quetes[(int)dbType].Contains(columns[i].FieldType) && input[i] != "null")
-                    result += $"'{input[i]}' as {columns[i].FieldName}, ";
+                if (!quetes[(int)dbType].Contains(Fields[i].FieldType) && input[i] != "null")
+                    result.Add($"'{input[i]}' as {Fields[i].FieldName}");
                 else
-                    result += $"{input[i]} as {columns[i].FieldName}, ";
+                    result.Add($"{input[i]} as {Fields[i].FieldName}");
 
-            return result.Remove(result.Length - 2, 2);
+            return string.Join(", ", result);
 
         }
+
     }
 }

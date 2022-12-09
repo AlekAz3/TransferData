@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TransferData.Model.Infrastructure;
+using TransferData.Model.Models;
 
 namespace TransferData.Test
 {
@@ -27,7 +29,7 @@ namespace TransferData.Test
         public void CompareColumns_Test()
         {
             SchemaInfo schemaInfo = new SchemaInfo("table1", new List<FieldInfo>() { new FieldInfo("col1", "a"), new FieldInfo("col2", "a"), new FieldInfo("col3", "a") });
-            var result = DbDataHelper.CompareColumns(schemaInfo);
+            var result = DbDataHelper.SetValuesSubQuery(schemaInfo);
 
             string expect = "col2 = T_Source.col2, col3 = T_Source.col3";
 

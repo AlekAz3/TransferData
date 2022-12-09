@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace TransferData.Model
+namespace TransferData.Model.Models
 {
     [Table("INFORMATION_SCHEMA.COLUMNS")]
     public class InformationSchema

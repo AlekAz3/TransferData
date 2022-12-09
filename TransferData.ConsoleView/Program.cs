@@ -2,10 +2,11 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using Serilog;
-using System;
-using TransferData.Model;
+using TransferData.Model.Infrastructure;
+using TransferData.Model.Models;
+using TransferData.Model.Services;
+using TransferData.Model.Services.Transfer;
 
 namespace TransferData.ConsoleView
 {
@@ -38,9 +39,8 @@ namespace TransferData.ConsoleView
                 .ConfigureServices((context, services) =>
                 {
                     services.AddDbContext<DataContext>();
+                    services.AddTransient<MetadataExtractor>();
                     services.AddTransient<DbDataExtractor>();
-                    services.AddTransient<DbSchemaExtractor>();
-                    services.AddTransient<DbDependency>();
                     services.AddTransient<TransferMSSQL>();
                     services.AddTransient<TransferPostgreSQL>();
                     services.AddTransient<ITransfer>(serviceProvider =>
@@ -55,22 +55,22 @@ namespace TransferData.ConsoleView
                                 throw new KeyNotFoundException();
                         }
                     });
-                    services.AddTransient<Worker>();
+                    services.AddTransient<EntryPoint>();
                 })
                 .UseSerilog()
                 .Build();
 
-            var svc = ActivatorUtilities.CreateInstance<Worker>(host.Services);
-            svc.Run(tableName, dbType);
+            var svc = ActivatorUtilities.CreateInstance<EntryPoint>(host.Services);
+            svc.CreateFile(tableName, dbType);
         }
     }
 
     class Options
     {
-        [Option('t',"table", Required = true, HelpText = "Название таблицы ")]
+        [Option('t',"table", Required = true, HelpText = "Название таблицы")]
         public string tableName { get; set; }
 
-        [Option('d',"database", Required = true, HelpText = "Название СУБД ")]
+        [Option('d',"database", Required = true, HelpText = "Название СУБД: PostgreSQL, MSSQL")]
         public DbType type { get; set; }
     }
 

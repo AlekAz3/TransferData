@@ -1,4 +1,4 @@
-﻿namespace TransferData.Model
+﻿namespace TransferData.Model.Services.Transfer
 {
     public interface ITransfer
     {
