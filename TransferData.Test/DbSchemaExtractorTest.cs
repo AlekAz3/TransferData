@@ -2,13 +2,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
 using TransferData.Model.Infrastructure;
 using TransferData.Model.Models;
+using TransferData.Model.Services;
 
 namespace TransferData.Test
 {
     public class DbSchemaExtractorTest
     {
         private readonly IConfiguration _config;
-        private readonly DbSchemaExtractor _extractor;
+        private readonly MetadataExtractor _extractor;
         private readonly DataContext _data;
 
         public DbSchemaExtractorTest()
@@ -18,7 +19,7 @@ namespace TransferData.Test
                 .AddJsonFile($"appsettings.json", optional: false, reloadOnChange: true);
             _config = builder.Build();
             _data = new DataContext(new NullLogger<DataContext>(), _config);
-            _extractor = new DbSchemaExtractor(_data);
+            _extractor = new MetadataExtractor(_data);
 
         }
 
@@ -26,7 +27,7 @@ namespace TransferData.Test
         public void DbSchemaExtractor_FoundTableName()
         {
             string table = "table1";
-            var result = _extractor.GetTableSchema(table).Result;
+            var result = _extractor.GetTableSchema(table);
             Assert.Equal(table, result.TableName);
 
         }
@@ -35,7 +36,7 @@ namespace TransferData.Test
         public void DbSchemaExtractor_FoundTableFields()
         {
             string table = "table1";
-            var result = _extractor.GetTableSchema(table).Result;
+            var result = _extractor.GetTableSchema(table);
             List<FieldInfo> fields;
 
 
@@ -43,8 +44,9 @@ namespace TransferData.Test
             fields = new List<FieldInfo>() 
             { 
                 new FieldInfo("id1", "integer"), 
-                new FieldInfo("realnum", "real"), 
-                new FieldInfo("id2", "integer") 
+                new FieldInfo("field1", "real"), 
+                new FieldInfo("id4", "integer"),
+                new FieldInfo("id2", "integer")
             };
 
             //MSSQL
@@ -57,7 +59,7 @@ namespace TransferData.Test
         [Fact(DisplayName = "ѕроверка работы при отсутсвующей таблицы")]
         public void DbSchemaExtractor_NotFoundTable()
         {
-            Assert.ThrowsAsync<Exception>(() => _extractor.GetTableSchema("Table3"));
+            Assert.Throws<Exception>(() => _extractor.GetTableSchema("Table111"));
         }
 
     }

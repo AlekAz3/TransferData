@@ -10,5 +10,17 @@
             FieldName = fieldName;
             FieldType = fieldType;
         }
+
+        internal string DataCheckQuotes(string value, DbType dbType)
+        {
+            if (dbType == DbType.PostgreSQL && FieldType == "date")
+                return $"to_date('{value}', 'DD-MM-YYYY H:MI:SS')";
+
+            if (Constants.WithoutQuotes.Contains(FieldType) && value != "null")
+                return $"{value}";
+            
+            return $"'{value}'";
+
+        }
     }
 }

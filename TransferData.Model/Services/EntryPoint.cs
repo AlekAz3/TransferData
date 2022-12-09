@@ -39,12 +39,19 @@ namespace TransferData.Model.Services
             {
                 file.WriteLine($"--Program Output: table {tableName} from {_config.GetValue<DbType>("AppDbOptions:DbType")} to {dbType} ");
 
+                file.WriteLine("--Temp table query");
+
                 foreach (var item in queries)
                 {
                     file.WriteLine($"--======= Table: {item.TableName} =========");
                     file.WriteLine(item.TempTableQuery);
+                }
+                file.WriteLine("");
+                file.WriteLine("--Merge query");
+                foreach (var item in queries)
+                {
+                    file.WriteLine($"--======= Table: {item.TableName} =========");
                     file.WriteLine(item.MergeQuery);
-                    file.WriteLine("");
                 }
             }
             _log.LogInformation($"File created!");
