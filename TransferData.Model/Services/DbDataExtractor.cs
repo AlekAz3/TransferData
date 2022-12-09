@@ -17,7 +17,7 @@ namespace TransferData.Model.Services
             _metadataExtractor = metadataExtractor;
         }
 
-        private string GenerateSelectQuary(SchemaInfo schema) => $"select {string.Join(", ", schema.Fields.Select(x => x.FieldName).ToList())} from {schema.TableName}";
+        private string GenerateSelectQuary(SchemaInfo schema) => $"select * from {schema.TableName}";
 
         private DataTable GetDataTable(string tableName)
         {

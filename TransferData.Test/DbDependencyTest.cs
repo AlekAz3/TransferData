@@ -48,8 +48,8 @@ namespace TransferData.Test
         [Fact]
         public void GetParentTable_Test()
         {
-            string expected = "table1";
-            string result = _dependency.GetParentTable("id1");
+            List<string> expected = new List<string>() { "table1" };
+            List<string> result = _dependency.GetParentTables("table1");
 
             Assert.Equal(expected, result);
         }
@@ -58,8 +58,8 @@ namespace TransferData.Test
         public void GetTableDependencyTables_Test()
         {
             var expected = new List<string>() {"table1", "table2",  "table4", "table3", "table5" };
-
-            var result = _dependency.GetTableDependencyTables("table1");
+            //var expected = "";
+            var result = _dependency.GetTableDependencyTables("Layers");
 
 
             Assert.Equal(expected, result);

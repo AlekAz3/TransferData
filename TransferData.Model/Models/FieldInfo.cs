@@ -1,4 +1,6 @@
-﻿namespace TransferData.Model.Models
+﻿using Microsoft.IdentityModel.Tokens;
+
+namespace TransferData.Model.Models
 {
     public record FieldInfo
     {
@@ -16,7 +18,12 @@
             if (dbType == DbType.PostgreSQL && FieldType == "date")
                 return $"to_date('{value}', 'DD-MM-YYYY H:MI:SS')";
 
-            if (Constants.WithoutQuotes.Contains(FieldType) && value != "null")
+            if (value.IsNullOrEmpty())
+            {
+                return "null";
+            }
+
+            if (Constants.WithoutQuotes.Contains(FieldType))
                 return $"{value}";
             
             return $"'{value}'";

@@ -28,20 +28,20 @@ namespace TransferData.Model.Services
         }
 
 
-        internal string GetParentTable(string foreignColumn)
+        internal List<string> GetParentTables(string tableName)
         {
-            string result = _dataContext.Database.SqlQueryRaw<string>($"select TABLE_NAME, COLUMN_NAME from (select CONSTRAINT_NAME from INFORMATION_SCHEMA.TABLE_CONSTRAINTS where CONSTRAINT_TYPE = 'PRIMARY KEY') as a, INFORMATION_SCHEMA.KEY_COLUMN_USAGE as b where a.CONSTRAINT_NAME = b.CONSTRAINT_NAME and COLUMN_NAME = '{foreignColumn}';").ToList()[0];
+            List<string> result = _dataContext.Database.SqlQueryRaw<string>($"select \r\n  c.TABLE_NAME\r\nfrom \r\n  (\r\n    select \r\n      c.CONSTRAINT_NAME,\r\n\t  d.COLUMN_NAME\r\n    from \r\n      INFORMATION_SCHEMA.TABLE_CONSTRAINTS as c, INFORMATION_SCHEMA.KEY_COLUMN_USAGE as d\r\n    where \r\n      CONSTRAINT_TYPE = 'FOREIGN KEY'  and\r\n\t  c.CONSTRAINT_NAME = d.CONSTRAINT_NAME and c.TABLE_NAME = '{tableName}'\r\n  ) as a, \r\n  INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS as b,\r\n  (select \r\n      * \r\n    from \r\n      INFORMATION_SCHEMA.TABLE_CONSTRAINTS \r\n    where \r\n      CONSTRAINT_TYPE = 'PRIMARY KEY') as c\r\nwhere \r\n  a.CONSTRAINT_NAME = b.CONSTRAINT_NAME and\r\n  b.UNIQUE_CONSTRAINT_NAME = c.CONSTRAINT_NAME and TABLE_NAME != '{tableName}';").ToList();
 
 
             return result;
         }
 
-        private string GetTableDependency(string tableName)
+        public string GetTableDependency(string tableName)
         {
 
-            string result = $"{tableName} ";
+            string result = $"{tableName} {string.Join(" ", GetParentTables(tableName))} ";
 
-            var a = GetForiegnKeyColumns(tableName);
+            var a = GetParentTables(tableName);
 
             if (a.IsNullOrEmpty())
             {
@@ -51,7 +51,7 @@ namespace TransferData.Model.Services
             {
                 foreach (var item in a)
                 {
-                    result += $"{GetTableDependency(GetParentTable(item))} ";
+                    result += $"{string.Join(" ", GetParentTables(item))} ";
                 }
             }
 
@@ -66,8 +66,8 @@ namespace TransferData.Model.Services
             {
                 if (result.Contains(item))
                 {
-                    result.Remove(result.Find(x => x == item));
-                    result.Add(item);
+                    //result.Remove(result.Find(x => x == item));
+                    //result.Add(item);
                 }
                 else
                 {
@@ -80,7 +80,7 @@ namespace TransferData.Model.Services
         internal SchemaInfo GetTableSchema(string tableName)
         {
             var informationSchema = _dataContext.Schema
-                .FromSqlRaw($"select table_schema, table_name, column_name, data_type from information_schema.columns where table_name = '{tableName}' order by ordinal_position")
+                .FromSqlRaw($"select table_schema, table_name, column_name, data_type from information_schema.columns where table_name = '{tableName}'")
                 .ToList();
 
             if (informationSchema.Count == 0)
