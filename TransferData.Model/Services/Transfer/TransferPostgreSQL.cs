@@ -51,8 +51,8 @@ namespace TransferData.Model.Services.Transfer
             sqlQueryString.AppendLine($"select {columnsJoin} into temp table Temp{schema.TableName} from");
             sqlQueryString.AppendLine("( ");
             for (int i = 0; i < tableData.Count - 1; i++)
-                sqlQueryString.AppendLine($"select {schema.FieldsWithQuotes(tableData[i], _dataContext.type, Models.DbType.PostgreSQL)} union all");
-            sqlQueryString.AppendLine($"select {schema.FieldsWithQuotes(tableData[tableData.Count - 1], _dataContext.type, Models.DbType.PostgreSQL)}");
+                sqlQueryString.AppendLine($"select {schema.FieldsWithQuotes(tableData[i], _dataContext.Type, Models.DbType.PostgreSQL)} union all");
+            sqlQueryString.AppendLine($"select {schema.FieldsWithQuotes(tableData[tableData.Count - 1], _dataContext.Type, Models.DbType.PostgreSQL)}");
 
             sqlQueryString.AppendLine(") as dt;");
 

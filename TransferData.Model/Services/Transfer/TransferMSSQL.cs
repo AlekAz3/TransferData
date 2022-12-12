@@ -49,8 +49,8 @@ namespace TransferData.Model.Services.Transfer
             sqlQueryString.AppendLine($"select {columnsJoin} into #Temp{schema.TableName} from");
             sqlQueryString.AppendLine("( ");
             for (int i = 0; i < tableData.Count - 1; i++)
-                sqlQueryString.AppendLine($"select {schema.FieldsWithQuotes(tableData[i], _dataContext.type, DbType.MSSQL)} union all");
-            sqlQueryString.AppendLine($"select {schema.FieldsWithQuotes(tableData[tableData.Count - 1], _dataContext.type, DbType.MSSQL)}");
+                sqlQueryString.AppendLine($"select {schema.FieldsWithQuotes(tableData[i], _dataContext.Type, DbType.MSSQL)} union all");
+            sqlQueryString.AppendLine($"select {schema.FieldsWithQuotes(tableData[tableData.Count - 1], _dataContext.Type, DbType.MSSQL)}");
 
             sqlQueryString.AppendLine(") as dt;");
 
