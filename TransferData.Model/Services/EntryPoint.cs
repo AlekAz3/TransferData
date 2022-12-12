@@ -31,13 +31,16 @@ namespace TransferData.Model.Services
                 return;
             }
 
+            Constants.fromDbType = _dataContext.Type;
+            Constants.toDbType = dbType;
+
             var queries = GetQueries(tableName);
 
             string path = $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\{tableName}_Transfer_{DateOnly.FromDateTime(DateTime.Now)}.txt";
 
             using (var file = new StreamWriter(path, false))
             {
-                file.WriteLine($"--Program Output: table {tableName} from {_config.GetValue<DbType>("AppDbOptions:DbType")} to {dbType} ");
+                file.WriteLine($"--Program Output: table {tableName} from {Constants.fromDbType} to {Constants.toDbType} ");
 
                 file.WriteLine("--Temp table query");
 

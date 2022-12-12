@@ -20,7 +20,7 @@ namespace TransferData.Model.Services.Transfer
         {
             var schema = _metadataExtractor.GetTableSchema(tableName);
             var sqlQueryString = new StringBuilder();
-            var columns = schema.Fields.Select(x => x.FieldNameWithEscape(Models.DbType.PostgreSQL)).ToList();
+            var columns = schema.Fields.Select(x => x.FieldNameWithEscape()).ToList();
             string primaryKey = $"\"{_metadataExtractor.GetPrimaryKeyColumn(tableName)}\"";
             string columsJoin = string.Join(", ", columns);
 
@@ -44,15 +44,15 @@ namespace TransferData.Model.Services.Transfer
         public string GenerateTempTableQuary(string tableName)
         {
             var schema = _metadataExtractor.GetTableSchema(tableName);
-            string columnsJoin = string.Join(", ", schema.Fields.Select(x => x.FieldNameWithEscape(Models.DbType.PostgreSQL)));
+            string columnsJoin = string.Join(", ", schema.Fields.Select(x => x.FieldNameWithEscape()));
             var tableData = _dataExtractor.ConvertDataTableToList(tableName);
 
             var sqlQueryString = new StringBuilder();
             sqlQueryString.AppendLine($"select {columnsJoin} into temp table Temp{schema.TableName} from");
             sqlQueryString.AppendLine("( ");
             for (int i = 0; i < tableData.Count - 1; i++)
-                sqlQueryString.AppendLine($"select {schema.FieldsWithQuotes(tableData[i], _dataContext.Type, Models.DbType.PostgreSQL)} union all");
-            sqlQueryString.AppendLine($"select {schema.FieldsWithQuotes(tableData[tableData.Count - 1], _dataContext.Type, Models.DbType.PostgreSQL)}");
+                sqlQueryString.AppendLine($"select {schema.FieldsWithQuotes(tableData[i])} union all");
+            sqlQueryString.AppendLine($"select {schema.FieldsWithQuotes(tableData[tableData.Count - 1])}");
 
             sqlQueryString.AppendLine(") as dt;");
 

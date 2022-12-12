@@ -13,9 +13,9 @@ namespace TransferData.Model.Models
             FieldType = fieldType;
         }
 
-        internal string DataCheckQuotes(string value, DbType dbType)
+        internal string DataCheckQuotes(string value)
         {
-            if (dbType == DbType.PostgreSQL && FieldType == "date")
+            if (Constants.toDbType == DbType.PostgreSQL && FieldType == "date")
                 return $"to_date('{value}', 'DD-MM-YYYY H:MI:SS')";
 
             if (value.IsNullOrEmpty())
@@ -28,9 +28,9 @@ namespace TransferData.Model.Models
 
         }
 
-        internal string FieldNameWithEscape(DbType dbType)
+        internal string FieldNameWithEscape()
         {
-            switch (dbType)
+            switch (Constants.toDbType)
             {
                 case DbType.PostgreSQL:
                     return $"\"{FieldName}\"";

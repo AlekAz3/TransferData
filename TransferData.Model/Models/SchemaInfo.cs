@@ -11,25 +11,25 @@
             Fields = fields;
         }
 
-        internal string SetValuesSubQuery(DbType dbType)
+        internal string SetValuesSubQuery()
         {
             return string.Join(", ",
-                Fields.Select(x => $"{x.FieldName} = {Constants.TableSourceName}.{x.FieldNameWithEscape(dbType)}"));
+                Fields.Select(x => $"{x.FieldName} = {Constants.TableSourceName}.{x.FieldNameWithEscape()}"));
         }
 
-        internal string ColumnsWithTableName(DbType dbType)
+        internal string ColumnsWithTableName()
         {
             return string.Join(", ",
-                Fields.Select(x => $"{Constants.TableSourceName}.{x.FieldNameWithEscape(dbType)}"));
+                Fields.Select(x => $"{Constants.TableSourceName}.{x.FieldNameWithEscape()}"));
         }
 
-        internal string FieldsWithQuotes(List<string> input, DbType fromDbType, DbType toDbType)
+        internal string FieldsWithQuotes(List<string> input)
         {
             List<string> result = new List<string>();
 
             for (int i = 0; i < input.Count; i++)
             {
-                result.Add($"{Fields[i].DataCheckQuotes(input[i], fromDbType)} as {Fields[i].FieldNameWithEscape(toDbType)}");
+                result.Add($"{Fields[i].DataCheckQuotes(input[i])} as {Fields[i].FieldNameWithEscape()}");
             }
 
             return string.Join(", ", result);
