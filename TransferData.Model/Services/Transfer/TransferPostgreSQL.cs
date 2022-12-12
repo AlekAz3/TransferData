@@ -25,8 +25,8 @@ namespace TransferData.Model.Services.Transfer
             string primaryKey = $"\"{_metadataExtractor.GetPrimaryKeyColumn(tableName)}\"";
             string columsJoin = string.Join(", ", columns);
 
-            sqlQueryString.AppendLine($"with upsert({primaryKey}) as");
-            sqlQueryString.AppendLine($"(");
+            sqlQueryString.AppendLine($"--with upsert({primaryKey}) as");
+            sqlQueryString.AppendLine($"--(");
             sqlQueryString.AppendLine($"insert into {schema.TableName} ({columsJoin})");
             sqlQueryString.AppendLine($"select {columsJoin} from Temp{schema.TableName}");
             sqlQueryString.AppendLine($"on conflict ({primaryKey}) do update set ");
@@ -36,8 +36,8 @@ namespace TransferData.Model.Services.Transfer
             }
             sqlQueryString.AppendLine($"{columns[columns.Count() - 1]} = excluded.{columns[columns.Count() - 1]}");
 
-            sqlQueryString.AppendLine($"returning {primaryKey} )");
-            sqlQueryString.AppendLine($"delete from {schema.TableName} where {primaryKey} not in (select {primaryKey} from upsert);");
+            sqlQueryString.AppendLine($";--returning {primaryKey} )");
+            sqlQueryString.AppendLine($"--delete from {schema.TableName} where {primaryKey} not in (select {primaryKey} from upsert);");
             return sqlQueryString.ToString();
         }
 
