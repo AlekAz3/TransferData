@@ -30,9 +30,7 @@ namespace TransferData.Model.Services
 
         internal List<string> GetParentTables(string tableName)
         {
-            List<string> result = _dataContext.Database.SqlQueryRaw<string>($"select \r\n  c.TABLE_NAME\r\nfrom \r\n  (\r\n    select \r\n      c.CONSTRAINT_NAME,\r\n\t  d.COLUMN_NAME\r\n    from \r\n      INFORMATION_SCHEMA.TABLE_CONSTRAINTS as c, INFORMATION_SCHEMA.KEY_COLUMN_USAGE as d\r\n    where \r\n      CONSTRAINT_TYPE = 'FOREIGN KEY'  and\r\n\t  c.CONSTRAINT_NAME = d.CONSTRAINT_NAME and c.TABLE_NAME = '{tableName}'\r\n  ) as a, \r\n  INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS as b,\r\n  (select \r\n      * \r\n    from \r\n      INFORMATION_SCHEMA.TABLE_CONSTRAINTS \r\n    where \r\n      CONSTRAINT_TYPE = 'PRIMARY KEY') as c\r\nwhere \r\n  a.CONSTRAINT_NAME = b.CONSTRAINT_NAME and\r\n  b.UNIQUE_CONSTRAINT_NAME = c.CONSTRAINT_NAME and TABLE_NAME != '{tableName}';").ToList();
-
-
+            List<string> result = _dataContext.Database.SqlQueryRaw<string>($"select c.TABLE_NAME from ( select c.CONSTRAINT_NAME, d.COLUMN_NAME from INFORMATION_SCHEMA.TABLE_CONSTRAINTS as c, INFORMATION_SCHEMA.KEY_COLUMN_USAGE as d where CONSTRAINT_TYPE = 'FOREIGN KEY'  and c.CONSTRAINT_NAME = d.CONSTRAINT_NAME and c.TABLE_NAME = '{tableName}') as a, INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS as b,(select * from INFORMATION_SCHEMA.TABLE_CONSTRAINTS where CONSTRAINT_TYPE = 'PRIMARY KEY') as c where a.CONSTRAINT_NAME = b.CONSTRAINT_NAME and b.UNIQUE_CONSTRAINT_NAME = c.CONSTRAINT_NAME and TABLE_NAME != '{tableName}';").ToList();
             return result;
         }
 
@@ -63,17 +61,8 @@ namespace TransferData.Model.Services
             var list = GetTableDependency(tableName).Split();
             var result = new List<string>();
             foreach (var item in list)
-            {
-                if (result.Contains(item))
-                {
-                    //result.Remove(result.Find(x => x == item));
-                    //result.Add(item);
-                }
-                else
-                {
+                if (!result.Contains(item))
                     result.Add(item);
-                }
-            }
             return result;
         }
 
@@ -85,7 +74,6 @@ namespace TransferData.Model.Services
 
             if (informationSchema.Count == 0)
                 throw new Exception("Table not Found");
-
 
             var fields = new List<FieldInfo>();
 
