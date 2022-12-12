@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using TransferData.Model.Infrastructure;
 
 namespace TransferData.Model.Services.Transfer
@@ -50,6 +51,16 @@ namespace TransferData.Model.Services.Transfer
             var sqlQueryString = new StringBuilder();
             sqlQueryString.AppendLine($"select {columnsJoin} into temp table Temp{schema.TableName} from");
             sqlQueryString.AppendLine("( ");
+
+            if (tableData.IsNullOrEmpty())
+               return "";
+            
+            if (tableData.Count == 1)
+            {
+                sqlQueryString.AppendLine($"select {schema.FieldsWithQuotes(tableData[0])} ) as dt;");
+                return sqlQueryString.ToString();
+            }
+
             for (int i = 0; i < tableData.Count - 1; i++)
                 sqlQueryString.AppendLine($"select {schema.FieldsWithQuotes(tableData[i])} union all");
             sqlQueryString.AppendLine($"select {schema.FieldsWithQuotes(tableData[tableData.Count - 1])}");

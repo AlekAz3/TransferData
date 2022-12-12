@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "TransferData.ConsoleView": {
+      "commandName": "Project",
+      "commandLineArgs": "-t GeoObjects -d MSSQL"
+    }
+  }
+}

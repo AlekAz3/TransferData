@@ -44,7 +44,7 @@ namespace TransferData.Model.Services
 
         public List<List<string>> ConvertDataTableToList(string tableName)
         {
-
+            var schema = _metadataExtractor.GetTableSchema(tableName);
             var dataTable = GetDataTable(tableName);
 
             var resultList = new List<List<string>>();
@@ -52,12 +52,15 @@ namespace TransferData.Model.Services
             {
                 object[] cells = row.ItemArray;
                 var cellsList = new List<string>();
-                foreach (object cell in cells)
+                for (int i = 0; i < cells.Length; i++)
                 {
+                    object cell = cells[i];
                     if (cell is null)
                         cellsList.Add("null");
-                    else
+                    else if (schema.Fields[i].FieldType != "geography")
                         cellsList.Add(cell.ToString().Replace(',', '.'));
+                    else
+                        cellsList.Add(cell.ToString());
                 }
                 resultList.Add(cellsList);
             }
