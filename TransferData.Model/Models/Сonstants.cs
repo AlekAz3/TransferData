@@ -8,7 +8,6 @@
             "int",
             "smallint",
             "tinyint",
-            "bit",
             "decimal",
             "numeric",
             "money",

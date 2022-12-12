@@ -20,8 +20,8 @@ namespace TransferData.Model.Services.Transfer
         {
             var schema = _metadataExtractor.GetTableSchema(tableName);
             var sqlQueryString = new StringBuilder();
-            var columns = schema.Fields.Select(x => x.FieldName).ToList();
-            string primaryKey = _metadataExtractor.GetPrimaryKeyColumn(tableName);
+            var columns = schema.Fields.Select(x => x.FieldNameWithEscape(Models.DbType.PostgreSQL)).ToList();
+            string primaryKey = $"\"{_metadataExtractor.GetPrimaryKeyColumn(tableName)}\"";
             string columsJoin = string.Join(", ", columns);
 
             sqlQueryString.AppendLine($"with upsert({primaryKey}) as");
@@ -44,15 +44,15 @@ namespace TransferData.Model.Services.Transfer
         public string GenerateTempTableQuary(string tableName)
         {
             var schema = _metadataExtractor.GetTableSchema(tableName);
-            string columnsJoin = string.Join(", ", schema.Fields.Select(x => x.FieldName));
+            string columnsJoin = string.Join(", ", schema.Fields.Select(x => x.FieldNameWithEscape(Models.DbType.PostgreSQL)));
             var tableData = _dataExtractor.ConvertDataTableToList(tableName);
 
             var sqlQueryString = new StringBuilder();
             sqlQueryString.AppendLine($"select {columnsJoin} into temp table Temp{schema.TableName} from");
             sqlQueryString.AppendLine("( ");
             for (int i = 0; i < tableData.Count - 1; i++)
-                sqlQueryString.AppendLine($"select {schema.FieldsWithQuotes(tableData[i], _dataContext.type)} union all");
-            sqlQueryString.AppendLine($"select {schema.FieldsWithQuotes(tableData[tableData.Count - 1], _dataContext.type)}");
+                sqlQueryString.AppendLine($"select {schema.FieldsWithQuotes(tableData[i], _dataContext.type, Models.DbType.PostgreSQL)} union all");
+            sqlQueryString.AppendLine($"select {schema.FieldsWithQuotes(tableData[tableData.Count - 1], _dataContext.type, Models.DbType.PostgreSQL)}");
 
             sqlQueryString.AppendLine(") as dt;");
 

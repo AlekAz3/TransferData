@@ -12,8 +12,10 @@ namespace TransferData.ConsoleView
 {
     public class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
+            var args = "-t Layers -d PostgreSQL".Split();
+
             var builder = new ConfigurationBuilder();
 
             Log.Logger = new LoggerConfiguration()

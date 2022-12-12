@@ -19,15 +19,26 @@ namespace TransferData.Model.Models
                 return $"to_date('{value}', 'DD-MM-YYYY H:MI:SS')";
 
             if (value.IsNullOrEmpty())
-            {
                 return "null";
-            }
-
+            
             if (Constants.WithoutQuotes.Contains(FieldType))
                 return $"{value}";
             
             return $"'{value}'";
 
+        }
+
+        internal string FieldNameWithEscape(DbType dbType)
+        {
+            switch (dbType)
+            {
+                case DbType.PostgreSQL:
+                    return $"\"{FieldName}\"";
+                case DbType.MSSQL:
+                    return $"[{FieldName}]";
+                default:
+                    return FieldName;
+            }
         }
     }
 }
