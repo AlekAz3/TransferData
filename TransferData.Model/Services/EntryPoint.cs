@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using TransferData.Model.Infrastructure;
 using TransferData.Model.Models;
 using TransferData.Model.Services.Transfer;
@@ -10,15 +9,13 @@ namespace TransferData.Model.Services
     {
         private readonly DataContext _dataContext;
         private readonly MetadataExtractor _metadataExtractor;
-        private readonly IConfiguration _config;
         private readonly ILogger<EntryPoint> _log;
         private readonly ITransfer _transfer;
 
-        public EntryPoint(DataContext dataContext, MetadataExtractor metadataExtractor, IConfiguration config, ILogger<EntryPoint> log, ITransfer transfer)
+        public EntryPoint(DataContext dataContext, MetadataExtractor metadataExtractor, ILogger<EntryPoint> log, ITransfer transfer)
         {
             _dataContext = dataContext;
             _metadataExtractor = metadataExtractor;
-            _config = config;
             _log = log;
             _transfer = transfer;
         }
