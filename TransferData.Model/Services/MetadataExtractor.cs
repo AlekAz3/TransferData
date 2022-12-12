@@ -80,7 +80,7 @@ namespace TransferData.Model.Services
         internal SchemaInfo GetTableSchema(string tableName)
         {
             var informationSchema = _dataContext.Schema
-                .FromSqlRaw($"select table_schema, table_name, column_name, data_type from information_schema.columns where table_name = '{tableName}'")
+                .FromSqlRaw($"select table_schema, table_name, column_name, data_type from information_schema.columns where table_name = '{tableName}' order by ORDINAL_POSITION")
                 .ToList();
 
             if (informationSchema.Count == 0)

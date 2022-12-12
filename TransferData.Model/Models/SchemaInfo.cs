@@ -14,7 +14,7 @@
         internal string SetValuesSubQuery()
         {
             return string.Join(", ",
-                Fields.Select(x => $"{x.FieldName} = {Constants.TableSourceName}.{x.FieldNameWithEscape()}"));
+                Fields.Select(x => $"{x.FieldNameWithEscape()} = {Constants.TableSourceName}.{x.FieldNameWithEscape()}"));
         }
 
         internal string ColumnsWithTableName()

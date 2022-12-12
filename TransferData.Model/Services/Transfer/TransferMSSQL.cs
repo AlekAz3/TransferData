@@ -21,7 +21,8 @@ namespace TransferData.Model.Services.Transfer
         {
             var schema = _metadataExtractor.GetTableSchema(tableName);
             var sqlQueryString = new StringBuilder();
-            var columns = schema.Fields.Select(x => x.FieldNameWithEscape()).ToList();
+            var columnsJoin = string.Join(", ", schema.Fields.Select(x => x.FieldNameWithEscape()));
+            
             string primaryKey = $"[{_metadataExtractor.GetPrimaryKeyColumn(tableName)}]";
 
             sqlQueryString.AppendLine($"merge {schema.TableName} AS {Constants.TableBaseName} ");
@@ -30,7 +31,7 @@ namespace TransferData.Model.Services.Transfer
             sqlQueryString.AppendLine($"when matched then ");
             sqlQueryString.AppendLine($"update set {schema.SetValuesSubQuery()} ");
             sqlQueryString.AppendLine($"when not matched then ");
-            sqlQueryString.AppendLine($"insert ({string.Join(", ", columns)}) ");
+            sqlQueryString.AppendLine($"insert ({columnsJoin}) ");
             sqlQueryString.AppendLine($"values ({schema.ColumnsWithTableName()}) ");
             sqlQueryString.AppendLine($"when not matched by source then delete;");
 
