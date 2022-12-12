@@ -64,6 +64,11 @@ namespace TransferData.Model.Models
             if (FieldType == "boolean" || FieldType == "bool" || FieldType == "bit")
                 return $"'{value}'::boolean";
 
+            if (FieldType == "geography")
+            {
+                return $"'{value}'::geometry";
+            }
+
             if (Constants.WithoutQuotes.Contains(FieldType))
                 return $"{value}";
 
