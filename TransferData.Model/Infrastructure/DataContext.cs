@@ -27,7 +27,7 @@ namespace TransferData.Model.Infrastructure
             switch (DbOption.DbType)
             {
                 case DbType.PostgreSQL:
-                    optionsBuilder.UseNpgsql(_config.GetConnectionString(typeof(DataContext).Name));
+                    optionsBuilder.UseNpgsql(_config.GetConnectionString(typeof(DataContext).Name), o => o.UseNetTopologySuite());
                     _logger.LogInformation("PostgeSQL Connect");
                     break;
                 case DbType.MSSQL:
@@ -42,6 +42,11 @@ namespace TransferData.Model.Infrastructure
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<InformationSchema>().HasNoKey();
+            if (Type == DbType.PostgreSQL)
+                modelBuilder.HasPostgresExtension("postgis");
+            
+            
+
         }
 
     }

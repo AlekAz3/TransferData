@@ -19,8 +19,7 @@
             "integer",
             "double precision",
             "bytea",
-            "double",
-            "geography"
+            "double"
         };
 
         public static readonly string TableBaseName = "T_Base";

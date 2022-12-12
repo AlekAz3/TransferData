@@ -57,10 +57,10 @@ namespace TransferData.Model.Services
                     object cell = cells[i];
                     if (cell is null)
                         cellsList.Add("null");
-                    else if (schema.Fields[i].FieldType != "geography")
-                        cellsList.Add(cell.ToString().Replace(',', '.'));
-                    else
+                    else if (schema.Fields[i].FieldType == "geography" || schema.Fields[i].FieldType == "USER-DEFINED")
                         cellsList.Add(cell.ToString());
+                    else
+                        cellsList.Add(cell.ToString().Replace(',', '.'));
                 }
                 resultList.Add(cellsList);
             }
