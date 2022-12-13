@@ -1,10 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TransferData.Model.Infrastructure;
 using TransferData.Model.Services;
 
@@ -48,8 +43,8 @@ namespace TransferData.Test
         [Fact]
         public void GetParentTable_Test()
         {
-            string expected = "table1";
-            string result = _dependency.GetParentTable("id1");
+            List<string> expected = new List<string>() { "table1" };
+            List<string> result = _dependency.GetParentTables("table1");
 
             Assert.Equal(expected, result);
         }
@@ -60,7 +55,6 @@ namespace TransferData.Test
             var expected = new List<string>() {"table1", "table2",  "table4", "table3", "table5" };
 
             var result = _dependency.GetTableDependencyTables("table1");
-
 
             Assert.Equal(expected, result);
         }

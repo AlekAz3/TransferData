@@ -11,7 +11,7 @@ namespace TransferData.Model.Infrastructure
         private readonly ILogger<DataContext> _logger;
         public DbSet<InformationSchema> Schema { get; init; }
 
-        public DbType type { get; private set; }
+        public DbType Type { get; private set; }
 
         public DataContext(ILogger<DataContext> log, IConfiguration config)
         {
@@ -23,11 +23,11 @@ namespace TransferData.Model.Infrastructure
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             var DbOption = _config.GetSection(nameof(AppDbOptions)).Get<AppDbOptions>();
-            type = DbOption.DbType;
+            Type = DbOption.DbType;
             switch (DbOption.DbType)
             {
                 case DbType.PostgreSQL:
-                    optionsBuilder.UseNpgsql(_config.GetConnectionString(typeof(DataContext).Name));
+                    optionsBuilder.UseNpgsql(_config.GetConnectionString(typeof(DataContext).Name), o => o.UseNetTopologySuite());
                     _logger.LogInformation("PostgeSQL Connect");
                     break;
                 case DbType.MSSQL:
@@ -42,6 +42,11 @@ namespace TransferData.Model.Infrastructure
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<InformationSchema>().HasNoKey();
+            if (Type == DbType.PostgreSQL)
+                modelBuilder.HasPostgresExtension("postgis");
+            
+            
+
         }
 
     }

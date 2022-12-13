@@ -17,7 +17,7 @@ namespace TransferData.Model.Services
             _metadataExtractor = metadataExtractor;
         }
 
-        private string GenerateSelectQuary(SchemaInfo schema) => $"select {string.Join(", ", schema.Fields.Select(x => x.FieldName).ToList())} from {schema.TableName}";
+        private string GenerateSelectQuary(SchemaInfo schema) => $"select * from {schema.TableName}";
 
         private DataTable GetDataTable(string tableName)
         {
@@ -44,7 +44,7 @@ namespace TransferData.Model.Services
 
         public List<List<string>> ConvertDataTableToList(string tableName)
         {
-
+            var schema = _metadataExtractor.GetTableSchema(tableName);
             var dataTable = GetDataTable(tableName);
 
             var resultList = new List<List<string>>();
@@ -52,10 +52,13 @@ namespace TransferData.Model.Services
             {
                 object[] cells = row.ItemArray;
                 var cellsList = new List<string>();
-                foreach (object cell in cells)
+                for (int i = 0; i < cells.Length; i++)
                 {
+                    object cell = cells[i];
                     if (cell is null)
                         cellsList.Add("null");
+                    else if (schema.Fields[i].FieldType == "geography" || schema.Fields[i].FieldType == "USER-DEFINED")
+                        cellsList.Add(cell.ToString());
                     else
                         cellsList.Add(cell.ToString().Replace(',', '.'));
                 }

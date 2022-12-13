@@ -1,13 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TransferData.Model.Infrastructure;
-using TransferData.Model.Models;
-using TransferData.Model.Services;
+﻿using TransferData.Model.Models;
 
 namespace TransferData.Test
 {
@@ -45,7 +36,7 @@ namespace TransferData.Test
         {
             SchemaInfo schemaInfo = new SchemaInfo("table1", new List<FieldInfo>() { new FieldInfo("col1", "int"), new FieldInfo("col2", "varchar"), new FieldInfo("col3", "double") });
             List<string> data = new List<string>() { "1", "twq", "4.6"};
-            var result = schemaInfo.FieldsWithQuotes(data, DbType.MSSQL);
+            var result = schemaInfo.FieldsWithQuotes(data);
             string expect = $"1 as col1, 'twq' as col2, 4.6 as col3";
 
             Assert.Equal(expect, result);
