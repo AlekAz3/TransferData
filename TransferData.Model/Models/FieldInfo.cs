@@ -56,7 +56,16 @@ namespace TransferData.Model.Models
                 return "null";
 
             if (FieldType == "date")
-                return $"to_date('{value}', 'DD-MM-YYYY H:MI:SS')";
+                return $"'{value}'::date";
+
+            if (FieldType == "time")
+                return $"'{value}'::time";
+
+            if (FieldType == "smalldatetime" || FieldType == "datetime" || FieldType == "datetime2" || FieldType == "timestamp without time zone")
+                return $"to_timestamp('{value}', 'DD.MM.YYYY HH24:MI:SS')::timestamp";
+
+            if (FieldType == "datetimeoffset" || FieldType == "timestamp with time zone")
+                return $"'{value}'::TimestampTz";
 
             if (FieldType == "uniqueidentifier" || FieldType == "uuid")
                 return $"'{value}'::uuid";
@@ -65,10 +74,8 @@ namespace TransferData.Model.Models
                 return $"'{value}'::boolean";
 
             if (FieldType == "geography")
-            {
                 return $"'{value}'::geometry";
-            }
-
+            
             if (Constants.WithoutQuotes.Contains(FieldType))
                 return $"{value}";
 
