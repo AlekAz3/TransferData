@@ -61,7 +61,7 @@ namespace TransferData.Model.Services
             var list = GetTableDependency(tableName).Split();
             var result = new List<string>();
             foreach (var item in list)
-                if (!result.Contains(item))
+                if (!result.Contains(item) && !item.IsNullOrEmpty())
                     result.Add(item);
             return result;
         }
