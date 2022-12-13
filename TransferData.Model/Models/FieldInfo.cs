@@ -1,4 +1,5 @@
 ﻿using Microsoft.IdentityModel.Tokens;
+using NetTopologySuite.Operation.Valid;
 
 namespace TransferData.Model.Models
 {
@@ -41,6 +42,11 @@ namespace TransferData.Model.Models
 
         private string QuotesMSSQL(string value)
         {
+            if ((FieldType == "varchar" || FieldType == "character varying" || FieldType == "nvarchar") && value.Contains('\''))
+            {
+                return $"'{value.Insert(value.IndexOf('\''), "\'")}'";
+            }
+
             if (value.IsNullOrEmpty())
                 return "null";
 
@@ -78,6 +84,10 @@ namespace TransferData.Model.Models
             
             if (Constants.WithoutQuotes.Contains(FieldType))
                 return $"{value}";
+
+            if (FieldType == "varchar" || FieldType == "character varying")
+                return $"\"{value}\"";
+
 
             return $"'{value}'";
         }
