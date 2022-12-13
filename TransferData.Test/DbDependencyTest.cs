@@ -1,10 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TransferData.Model.Infrastructure;
 using TransferData.Model.Services;
 
@@ -58,9 +53,8 @@ namespace TransferData.Test
         public void GetTableDependencyTables_Test()
         {
             var expected = new List<string>() {"table1", "table2",  "table4", "table3", "table5" };
-            //var expected = "";
-            var result = _dependency.GetTableDependencyTables("Layers");
 
+            var result = _dependency.GetTableDependencyTables("table1");
 
             Assert.Equal(expected, result);
         }

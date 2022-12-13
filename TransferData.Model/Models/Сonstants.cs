@@ -25,6 +25,8 @@
         public static readonly string TableBaseName = "T_Base";
         public static readonly string TableSourceName = "T_Source";
 
+        public static readonly string[] charData = new string[3] { "varchar", "nvarchar", "character varying" };
+
         public static DbType toDbType;
         public static DbType fromDbType;
     }

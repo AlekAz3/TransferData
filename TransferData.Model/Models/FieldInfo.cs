@@ -42,13 +42,11 @@ namespace TransferData.Model.Models
 
         private string QuotesMSSQL(string value)
         {
-            if ((FieldType == "varchar" || FieldType == "character varying" || FieldType == "nvarchar") && value.Contains('\''))
-            {
-                return $"'{value.Insert(value.IndexOf('\''), "\'")}'";
-            }
-
             if (value.IsNullOrEmpty())
                 return "null";
+
+            if (Constants.charData.Contains(FieldType) && value.Contains('\''))
+                return $"'{value.Insert(value.IndexOf('\''), "\'")}'";
 
             if (Constants.WithoutQuotes.Contains(FieldType))
                 return $"{value}";
@@ -61,6 +59,9 @@ namespace TransferData.Model.Models
             if (value.IsNullOrEmpty())
                 return "null";
 
+            if (Constants.charData.Contains(FieldType) && value.Contains('\''))
+                return $"'{value.Insert(value.IndexOf('\''), "\'")}'";
+            
             if (FieldType == "date")
                 return $"'{value}'::date";
 
@@ -84,10 +85,6 @@ namespace TransferData.Model.Models
             
             if (Constants.WithoutQuotes.Contains(FieldType))
                 return $"{value}";
-
-            if (FieldType == "varchar" || FieldType == "character varying")
-                return $"\"{value}\"";
-
 
             return $"'{value}'";
         }
