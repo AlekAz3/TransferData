@@ -1,6 +1,4 @@
 ﻿using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using TransferData.Model.Infrastructure;
 using TransferData.Model.Models;
 
 namespace TransferData.Model.Services.Transfer
@@ -9,63 +7,68 @@ namespace TransferData.Model.Services.Transfer
     {
         private readonly DbDataExtractor _dataExtractor;
         private readonly MetadataExtractor _metadataExtractor;
-        private readonly DataContext _dataContext;
 
-        public TransferMSSQL(DbDataExtractor dataExtractor, MetadataExtractor metadataExtractor, DataContext dataContext)
+        public TransferMSSQL(DbDataExtractor dataExtractor, MetadataExtractor metadataExtractor)
         {
             _dataExtractor = dataExtractor;
             _metadataExtractor = metadataExtractor;
-            _dataContext = dataContext;
         }
 
-        public string GenerateMergeQuery(string tableName)
+        public List<string> GenerateMergeQuery(string tableName)
         {
             var schema = _metadataExtractor.GetTableSchema(tableName);
-            var sqlQueryString = new StringBuilder();
+            var sqlQuery = new List<string>();
             var columnsJoin = string.Join(", ", schema.Fields.Select(x => x.FieldNameWithEscape()));
             
             string primaryKey = $"[{_metadataExtractor.GetPrimaryKeyColumn(tableName)}]";
 
-            sqlQueryString.AppendLine($"merge {schema.TableName} AS {Constants.TableBaseName} ");
-            sqlQueryString.AppendLine($"using #Temp{schema.TableName} AS T_Source ");
-            sqlQueryString.AppendLine($"on ({Constants.TableBaseName}.{primaryKey} = {Constants.TableSourceName}.{primaryKey}) ");
-            sqlQueryString.AppendLine($"when matched then ");
-            sqlQueryString.AppendLine($"update set {schema.SetValuesSubQuery()} ");
-            sqlQueryString.AppendLine($"when not matched then ");
-            sqlQueryString.AppendLine($"insert ({columnsJoin}) ");
-            sqlQueryString.AppendLine($"values ({schema.ColumnsWithTableName()}) ");
-            sqlQueryString.AppendLine($";--when not matched by source then delete;");
+            sqlQuery.Add($"merge {schema.TableName} AS {Constants.TableBaseName} ");
+            sqlQuery.Add($"using #Temp{schema.TableName} AS T_Source ");
+            sqlQuery.Add($"on ({Constants.TableBaseName}.{primaryKey} = {Constants.TableSourceName}.{primaryKey}) ");
+            sqlQuery.Add($"when matched then ");
+            sqlQuery.Add($"update set {schema.SetValuesSubQuery()} ");
+            sqlQuery.Add($"when not matched then ");
+            sqlQuery.Add($"insert ({columnsJoin}) ");
+            sqlQuery.Add($"values ({schema.ColumnsWithTableName()}) ");
+            sqlQuery.Add($";--when not matched by source then delete;");
 
-            return sqlQueryString.ToString();
+            return sqlQuery;
 
         }
 
-
-        public string GenerateTempTableQuary(string tableName)
+        public List<string> GenerateTempTableQuary(string tableName)
         {
             var schema = _metadataExtractor.GetTableSchema(tableName);
             string columnsJoin = string.Join(", ", schema.Fields.Select(x => x.FieldNameWithEscape()));
             var tableData = _dataExtractor.ConvertDataTableToList(tableName);
 
-            var sqlQueryString = new StringBuilder();
-            sqlQueryString.AppendLine($"select {columnsJoin} into #Temp{schema.TableName} from");
-            sqlQueryString.AppendLine("( ");
+            var sqlQuery = new List<string>
+            {
+                $"select {columnsJoin} into #Temp{schema.TableName} from",
+                "( "
+            };
+
             if (tableData.IsNullOrEmpty())
-                return "";
+            {
+                sqlQuery.Add(") as dt;");
+                return sqlQuery;
+            }
 
             if (tableData.Count == 1)
             {
-                sqlQueryString.AppendLine($"select {schema.FieldsWithQuotes(tableData[0])} ) as dt;");
-                return sqlQueryString.ToString();
+                sqlQuery.Add($"select {schema.FieldsWithQuotes(tableData[0])})");
+                sqlQuery.Add($"as dt;");
+                return sqlQuery;
             }
 
-            for (int i = 0; i < tableData.Count - 1; i++)
-                sqlQueryString.AppendLine($"select {schema.FieldsWithQuotes(tableData[i])} union all");
-            sqlQueryString.AppendLine($"select {schema.FieldsWithQuotes(tableData[tableData.Count - 1])}");
+            for (int i = 0; i < tableData.Count; i++)
+                sqlQuery.Add($"select {schema.FieldsWithQuotes(tableData[i])} union all");
 
-            sqlQueryString.AppendLine(") as dt;");
+            sqlQuery[sqlQuery.Count - 1].Remove(sqlQuery.Count - 10, 10);
 
-            return sqlQueryString.ToString();
+            sqlQuery.Add(") as dt;");
+
+            return sqlQuery;
         }
     }
 }

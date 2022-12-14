@@ -44,14 +44,14 @@ namespace TransferData.Model.Services
                 foreach (var item in queries)
                 {
                     file.WriteLine($"--======= Table: {item.TableName} =========");
-                    file.WriteLine(item.TempTableQuery);
+                    file.WriteLine(string.Join("\n", item.TempTableQuery));
                 }
                 file.WriteLine("");
                 file.WriteLine("--Merge query");
                 foreach (var item in queries)
                 {
                     file.WriteLine($"--======= Table: {item.TableName} =========");
-                    file.WriteLine(item.MergeQuery);
+                    file.WriteLine(string.Join("\n", item.MergeQuery));
                 }
             }
             _log.LogInformation($"File created!");

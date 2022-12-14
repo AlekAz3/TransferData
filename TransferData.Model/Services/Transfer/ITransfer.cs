@@ -2,7 +2,7 @@
 {
     public interface ITransfer
     {
-        string GenerateTempTableQuary(string tableName);
-        string GenerateMergeQuery(string tableName);
+        List<string> GenerateTempTableQuary(string tableName);
+        List<string> GenerateMergeQuery(string tableName);
     }
 }
