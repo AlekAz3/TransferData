@@ -1,5 +1,4 @@
 ﻿using Microsoft.IdentityModel.Tokens;
-using NetTopologySuite.Operation.Valid;
 
 namespace TransferData.Model.Models
 {

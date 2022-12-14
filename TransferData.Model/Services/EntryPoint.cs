@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using TransferData.Model.Infrastructure;
 using TransferData.Model.Models;
-using TransferData.Model.Services.Transfer;
 
 namespace TransferData.Model.Services
 {
