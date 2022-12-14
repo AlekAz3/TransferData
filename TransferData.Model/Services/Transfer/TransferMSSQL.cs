@@ -14,6 +14,16 @@ namespace TransferData.Model.Services.Transfer
             _metadataExtractor = metadataExtractor;
         }
 
+        public List<TableQuery> GetTableQueries(string tableName)
+        {
+            var tables = _metadataExtractor.GetTableDependencyTables(tableName);
+            tables.Reverse();
+            var tableQueries = new List<TableQuery>();
+            foreach (var table in tables)
+                tableQueries.Add(new TableQuery(table, GenerateMergeQuery(table), GenerateTempTableQuary(table)));
+            return tableQueries;
+        }
+
         public List<string> GenerateMergeQuery(string tableName)
         {
             var schema = _metadataExtractor.GetTableSchema(tableName);

@@ -2,7 +2,7 @@
   "profiles": {
     "TransferData.ConsoleView": {
       "commandName": "Project",
-      "commandLineArgs": "-t GeoObjects -d PostgreSQL"
+      "commandLineArgs": "-t BaseObjects -d PostgreSQL"
     }
   }
 }

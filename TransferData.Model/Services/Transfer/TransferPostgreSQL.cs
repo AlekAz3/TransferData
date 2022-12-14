@@ -1,6 +1,7 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using TransferData.Model.Infrastructure;
+using TransferData.Model.Models;
 
 namespace TransferData.Model.Services.Transfer
 {
@@ -13,6 +14,16 @@ namespace TransferData.Model.Services.Transfer
         {
             _dataExtractor = dataExtractor;
             _metadataExtractor = metadataExtractor;
+        }
+
+        public List<TableQuery> GetTableQueries(string tableName)
+        {
+            var tables = _metadataExtractor.GetTableDependencyTables(tableName);
+            tables.Reverse();
+            var tableQueries = new List<TableQuery>();
+            foreach (var table in tables)
+                tableQueries.Add(new TableQuery(table, GenerateMergeQuery(table), GenerateTempTableQuary(table)));
+            return tableQueries;
         }
 
         public List<string> GenerateMergeQuery(string tableName)
