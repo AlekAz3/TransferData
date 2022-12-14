@@ -1,6 +1,4 @@
 ﻿using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using TransferData.Model.Infrastructure;
 using TransferData.Model.Models;
 
 namespace TransferData.Model.Services.Transfer
@@ -75,14 +73,54 @@ namespace TransferData.Model.Services.Transfer
                 sqlQuery.Add($") as dt;");
                 return sqlQuery;
             }
+            if (tableData.Count >= Constants.MaxRow)
+            {
+                int count = tableData.Count / Constants.MaxRow;
 
-            for(int i = 0; i < tableData.Count; i++)
-                sqlQuery.Add($"select {schema.FieldsWithQuotes(tableData[i])} union all");
-            sqlQuery[sqlQuery.Count - 1].Remove(sqlQuery[sqlQuery.Count - 1].Length - 10, 10);
+                for (int i = 0; i < Constants.MaxRow; i++)
+                    sqlQuery.Add($"select {schema.FieldsWithQuotes(tableData[i])} union all");
+                sqlQuery[sqlQuery.Count - 1] = sqlQuery[sqlQuery.Count - 1].Remove(sqlQuery[sqlQuery.Count - 1].Length - 10, 10);
+                sqlQuery.Add(") as dt;");
 
-            sqlQuery.Add(") as dt;");
+                for (int i = 1; i < count; i++)
+                {
+                    sqlQuery.Add($"insert into Temp{schema.TableName}");
+                    sqlQuery.Add($"select {columnsJoin} from");
+                    sqlQuery.Add("(");
 
-            return sqlQuery;
+                    for (int j = (i * Constants.MaxRow); j < ((i + 1) * Constants.MaxRow); j++)
+                        sqlQuery.Add($"select {schema.FieldsWithQuotes(tableData[j])} union all");
+
+                    sqlQuery[sqlQuery.Count - 1] = sqlQuery[sqlQuery.Count - 1].Remove(sqlQuery[sqlQuery.Count - 1].Length - 10, 10);
+                    sqlQuery.Add(") as dt;");
+                }
+
+                sqlQuery.Add($"\n");
+
+
+
+                sqlQuery.Add($"insert into Temp{schema.TableName}");
+                sqlQuery.Add($"select {columnsJoin} from");
+                sqlQuery.Add("(");
+
+                for (int i = count * Constants.MaxRow; i < tableData.Count; i++)
+                    sqlQuery.Add($"select {schema.FieldsWithQuotes(tableData[i])} union all");
+
+                sqlQuery[sqlQuery.Count - 1] = sqlQuery[sqlQuery.Count - 1].Remove(sqlQuery[sqlQuery.Count - 1].Length - 10, 10);
+                sqlQuery.Add(") as dt;");
+
+                return sqlQuery;
+            }
+            else
+            {
+                for (int i = 0; i < tableData.Count; i++)
+                    sqlQuery.Add($"select {schema.FieldsWithQuotes(tableData[i])} union all");
+
+                sqlQuery[sqlQuery.Count - 1] = sqlQuery[sqlQuery.Count - 1].Remove(sqlQuery[sqlQuery.Count - 1].Length - 10, 10);
+                sqlQuery.Add(") as dt;");
+
+                return sqlQuery;
+            }
         }
     }
 }

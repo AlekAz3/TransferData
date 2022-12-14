@@ -24,6 +24,7 @@
 
         public static readonly string TableBaseName = "T_Base";
         public static readonly string TableSourceName = "T_Source";
+        public static readonly int MaxRow = 5000;
 
         public static readonly string[] charData = new string[3] { "varchar", "nvarchar", "character varying" };
 

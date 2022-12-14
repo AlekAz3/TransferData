@@ -1,10 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TransferData.Model.Models;
+﻿using TransferData.Model.Models;
 using TransferData.Model.Services.Transfer;
 
 namespace TransferData.Model.Services
@@ -12,10 +6,7 @@ namespace TransferData.Model.Services
     public class WriteToFile
     {
         private readonly ITransfer _transfer;
-        private List<TableQuery> tableQueries;
-
-        //jprivate readonly string path = $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\{tableName}_Transfer_{DateOnly.FromDateTime(DateTime.Now)}.txt";
-        //private readonly string path = $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}";
+        private List<TableQuery> tableQueries = new List<TableQuery>();
 
         public WriteToFile(ITransfer transfer)
         {
@@ -25,10 +16,10 @@ namespace TransferData.Model.Services
         public void Write(string tableName)
         {
             tableQueries = _transfer.GetTableQueries(tableName);
-            WriteAllToOneFile(tableQueries, tableName);
+            WriteOnFile(tableName);
         }
 
-        private void WriteAllToOneFile(List<TableQuery> tableQueries, string tableName)
+        private void WriteOnFile(string tableName)
         {
             string path = $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\{tableName}_Transfer_{DateOnly.FromDateTime(DateTime.Now)}.txt";
 
@@ -52,6 +43,5 @@ namespace TransferData.Model.Services
                 }
             }
         }
-
     }
 }
