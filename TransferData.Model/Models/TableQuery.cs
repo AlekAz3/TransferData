@@ -1,5 +1,8 @@
 ﻿namespace TransferData.Model.Models
 {
+    /// <summary>
+    /// Класс в котором содержится Мёрдж запрос и создание временной таблицы
+    /// </summary>
     public record TableQuery
     {
         public string TableName { get; set; }

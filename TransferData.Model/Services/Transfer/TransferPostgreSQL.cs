@@ -3,6 +3,9 @@ using TransferData.Model.Models;
 
 namespace TransferData.Model.Services.Transfer
 {
+    /// <summary>
+    /// Класс сервис наследованный от ITransfer который переносит данные В PostgreSQL
+    /// </summary>
     public class TransferPostgreSQL : ITransfer
     {
         private readonly DbDataExtractor _dataExtractor;

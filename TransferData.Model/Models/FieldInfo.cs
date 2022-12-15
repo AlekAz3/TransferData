@@ -2,6 +2,9 @@
 
 namespace TransferData.Model.Models
 {
+    /// <summary>
+    /// Класс описание полей таблицы
+    /// </summary>
     public record FieldInfo
     {
         public string FieldName { get; init; }
@@ -13,6 +16,11 @@ namespace TransferData.Model.Models
             FieldType = fieldType;
         }
 
+        /// <summary>
+        /// Обрамление данных в апострофы данных 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         internal string DataCheckQuotes(string value)
         {
             switch (Constants.toDbType)
@@ -25,7 +33,10 @@ namespace TransferData.Model.Models
                     return value;
             }
         }
-
+        /// <summary>
+        /// Экранирование столбцов таблицы
+        /// </summary>
+        /// <returns></returns>
         internal string FieldNameWithEscape()
         {
             switch (Constants.toDbType)

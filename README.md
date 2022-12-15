@@ -20,30 +20,31 @@ TransferData.ConsoleView.exe -t table1 -d MSSQL
 ```
 
 # Результат работы  
-Если программа успешно завершает свою работу, на рабочем столе появится файл содержащий 2 SQL команды  
+Если программа успешно завершает свою работу, на рабочем столе появится файл содержащий SQL запросы для переноса данных, и если у исходной таблицы есть внешние ключи то программа создаст запросы для синхрацизации всех таблиц от которых зависит главная таблица 
 
-Команда для создания временной таблицы
+Команда для создания временной таблицы 
 ```sql
-select id1, realnum, id2 into #Temptable1 from
-(
-    select 1 as id1, 625.67 as realnum, 2 as id2 union all
-    select 2 as id1, 33.67 as realnum, 3 as id2 union all
-    select 3 as id1, 13.67 as realnum, 1 as id2 union all
-    select 4 as id1, 612.67 as realnum, 2 as id2 union all
-    select 5 as id1, 14.2 as realnum, 2 as id2 union all
-    select 6 as id1, 555.5 as realnum, 3 as id2
-) as dt
+select [id1], [field1], [id2], [id4], [boolf] into #TempTable1 from
+( 
+select 1 as [id1], 'table1' as [field1], 1 as [id2], 1 as [id4], 'True' as [boolf] union all
+select 2 as [id1], 'table1' as [field1], 1 as [id2], 1 as [id4], 'True' as [boolf] union all
+select 3 as [id1], 'table3' as [field1], 3 as [id2], 1 as [id4], 'True' as [boolf] union all
+select 4 as [id1], 'table4' as [field1], 4 as [id2], 1 as [id4], 'True' as [boolf] union all
+select 5 as [id1], 'table5' as [field1], 5 as [id2], 1 as [id4], 'True' as [boolf] union all
+select 6 as [id1], 'table6' as [field1], 6 as [id2], 1 as [id4], 'True' as [boolf] union all
+select 7 as [id1], 'table2' as [field1], 7 as [id2], 1 as [id4], 'False' as [boolf]
+) as dt;
 ```
 
 Команда для синхронизации таблиц  
 ```sql
-merge table1 AS T_Base 
-using #Temptable1 AS T_Source 
-on (T_Base.id1 = T_Source.id1) 
+merge Table1 AS T_Base 
+using #TempTable1 AS T_Source 
+on (T_Base.[id1] = T_Source.[id1]) 
 when matched then 
-update set realnum = T_Source.realnum, id2 = T_Source.id2 
+update set [id1] = T_Source.[id1], [field1] = T_Source.[field1], [id2] = T_Source.[id2], [id4] = T_Source.[id4], [boolf] = T_Source.[boolf] 
 when not matched then 
-insert (id1, realnum, id2) 
-values (T_Source.realnum, T_Source.id2) 
---when not matched by source then delete
+insert ([id1], [field1], [id2], [id4], [boolf]) 
+values (T_Source.[id1], T_Source.[field1], T_Source.[id2], T_Source.[id4], T_Source.[boolf]) 
+;--when not matched by source then delete;
 ```
