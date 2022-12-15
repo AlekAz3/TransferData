@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "TransferData.ConsoleView": {
-      "commandName": "Project",
-      "commandLineArgs": "-t BaseObjects -d PostgreSQL"
-    }
-  }
-}
