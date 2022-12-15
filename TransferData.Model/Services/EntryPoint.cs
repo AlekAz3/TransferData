@@ -1,25 +1,30 @@
 ﻿using Microsoft.Extensions.Logging;
 using TransferData.Model.Infrastructure;
 using TransferData.Model.Models;
-using TransferData.Model.Services.Transfer;
 
 namespace TransferData.Model.Services
 {
+    /// <summary>
+    /// Класс вход в программу
+    /// </summary>
     public class EntryPoint
     {
         private readonly DataContext _dataContext;
-        private readonly MetadataExtractor _metadataExtractor;
         private readonly ILogger<EntryPoint> _log;
-        private readonly ITransfer _transfer;
+        private readonly FileProvider _writer;
 
-        public EntryPoint(DataContext dataContext, MetadataExtractor metadataExtractor, ILogger<EntryPoint> log, ITransfer transfer)
+        public EntryPoint(DataContext dataContext, ILogger<EntryPoint> log, FileProvider writer)
         {
             _dataContext = dataContext;
-            _metadataExtractor = metadataExtractor;
             _log = log;
-            _transfer = transfer;
+            _writer = writer;
         }
 
+        /// <summary>
+        /// Делает настройку и вызывает метод для записи данных в файл
+        /// </summary>
+        /// <param name="tableName">Название таблицы</param>
+        /// <param name="dbType">Тип СУБД в который надо перевести данные</param>
         public void CreateFile(string tableName, DbType dbType)
         {
             if (!_dataContext.Database.CanConnect())
@@ -31,43 +36,10 @@ namespace TransferData.Model.Services
             Constants.fromDbType = _dataContext.Type;
             Constants.toDbType = dbType;
 
-            var queries = GetQueries(tableName);
+            _writer.Write(tableName);
 
-            string path = $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\{tableName}_Transfer_{DateOnly.FromDateTime(DateTime.Now)}.txt";
-
-            using (var file = new StreamWriter(path, false))
-            {
-                file.WriteLine($"--Program Output: table {tableName} from {Constants.fromDbType} to {Constants.toDbType} ");
-
-                file.WriteLine("--Temp table query");
-
-                foreach (var item in queries)
-                {
-                    file.WriteLine($"--======= Table: {item.TableName} =========");
-                    file.WriteLine(item.TempTableQuery);
-                }
-                file.WriteLine("");
-                file.WriteLine("--Merge query");
-                foreach (var item in queries)
-                {
-                    file.WriteLine($"--======= Table: {item.TableName} =========");
-                    file.WriteLine(item.MergeQuery);
-                }
-            }
             _log.LogInformation($"File created!");
 
-        }
-
-        internal List<TableQuery> GetQueries(string tableName)
-        {
-            var tables = _metadataExtractor.GetTableDependencyTables(tableName);
-            tables.Reverse();
-            var result = new List<TableQuery>();
-            foreach (var table in tables)
-            {
-                result.Add(new TableQuery(table, _transfer.GenerateMergeQuery(table), _transfer.GenerateTempTableQuary(table)));
-            }
-            return result;
         }
     }
 }

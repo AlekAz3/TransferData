@@ -5,6 +5,9 @@ using TransferData.Model.Models;
 
 namespace TransferData.Model.Services
 {
+    /// <summary>
+    /// Класс для получения метаданных из таблицы в СУБД
+    /// </summary>
     public class MetadataExtractor
     {
         private readonly DataContext _dataContext;
@@ -13,7 +16,11 @@ namespace TransferData.Model.Services
         {
             _dataContext = dataContext;
         }
-
+        /// <summary>
+        /// Получение списка внешних ключей 
+        /// </summary>
+        /// <param name="tableName">Название таблицы</param>
+        /// <returns>Список столбцов внешних ключей</returns>
         internal List<string> GetForiegnKeyColumns(string tableName)
         {
             var result = _dataContext.Database.SqlQueryRaw<string>($"select COLUMN_NAME from ( select CONSTRAINT_NAME from INFORMATION_SCHEMA.TABLE_CONSTRAINTS where CONSTRAINT_TYPE = 'FOREIGN KEY') as a, INFORMATION_SCHEMA.KEY_COLUMN_USAGE as b where a.CONSTRAINT_NAME = b.CONSTRAINT_NAME and TABLE_NAME = '{tableName}';").ToList();
@@ -21,20 +28,34 @@ namespace TransferData.Model.Services
             return result;
         }
 
+        /// <summary>
+        /// Получение столбца первичного ключа
+        /// </summary>
+        /// <param name="tableName">Название таблицы</param>
+        /// <returns>Название столба первичного ключа</returns>
         internal string GetPrimaryKeyColumn(string tableName)
         {
             string column = _dataContext.Database.SqlQueryRaw<string>($"select COLUMN_NAME from ( select CONSTRAINT_NAME from INFORMATION_SCHEMA.TABLE_CONSTRAINTS where CONSTRAINT_TYPE = 'PRIMARY KEY') as a, INFORMATION_SCHEMA.KEY_COLUMN_USAGE as b where a.CONSTRAINT_NAME = b.CONSTRAINT_NAME and TABLE_NAME = '{tableName}';").ToList()[0];
             return column;
         }
 
-
+        /// <summary>
+        /// Получение списка родительских таблиц данной таблицы 
+        /// </summary>
+        /// <param name="tableName">Название таблиц</param>
+        /// <returns>Список родительских таблиц</returns>
         internal List<string> GetParentTables(string tableName)
         {
             List<string> result = _dataContext.Database.SqlQueryRaw<string>($"select c.TABLE_NAME from ( select c.CONSTRAINT_NAME, d.COLUMN_NAME from INFORMATION_SCHEMA.TABLE_CONSTRAINTS as c, INFORMATION_SCHEMA.KEY_COLUMN_USAGE as d where CONSTRAINT_TYPE = 'FOREIGN KEY'  and c.CONSTRAINT_NAME = d.CONSTRAINT_NAME and c.TABLE_NAME = '{tableName}') as a, INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS as b,(select * from INFORMATION_SCHEMA.TABLE_CONSTRAINTS where CONSTRAINT_TYPE = 'PRIMARY KEY') as c where a.CONSTRAINT_NAME = b.CONSTRAINT_NAME and b.UNIQUE_CONSTRAINT_NAME = c.CONSTRAINT_NAME and TABLE_NAME != '{tableName}';").ToList();
             return result;
         }
-
-        public string GetTableDependency(string tableName)
+        
+        /// <summary>
+        /// Получение сырового списка таблиц от которых зависит исходная таблица 
+        /// </summary>
+        /// <param name="tableName">Название таблицы</param>
+        /// <returns></returns>
+        private string GetTableDependency(string tableName)
         {
 
             string result = $"{tableName} {string.Join(" ", GetParentTables(tableName))} ";
@@ -56,6 +77,11 @@ namespace TransferData.Model.Services
             return result.Trim();
         }
 
+        /// <summary>
+        /// Получение списка таблиц от которых зависит исходная таблицы
+        /// </summary>
+        /// <param name="tableName">Название таблицы</param>
+        /// <returns></returns>
         public List<string> GetTableDependencyTables(string tableName)
         {
             var list = GetTableDependency(tableName).Split();
@@ -66,6 +92,12 @@ namespace TransferData.Model.Services
             return result;
         }
 
+        /// <summary>
+        /// Получение схемы таблицы
+        /// </summary>
+        /// <param name="tableName">Название таблицы</param>
+        /// <returns></returns>
+        /// <exception cref="Exception">Таблца не найдена</exception>
         internal SchemaInfo GetTableSchema(string tableName)
         {
             var informationSchema = _dataContext.Schema
