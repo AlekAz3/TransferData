@@ -11,9 +11,9 @@ namespace TransferData.Model.Services
     {
         private readonly DataContext _dataContext;
         private readonly ILogger<EntryPoint> _log;
-        private readonly WriteToFile _writer;
+        private readonly FileProvider _writer;
 
-        public EntryPoint(DataContext dataContext, ILogger<EntryPoint> log, WriteToFile writer)
+        public EntryPoint(DataContext dataContext, ILogger<EntryPoint> log, FileProvider writer)
         {
             _dataContext = dataContext;
             _log = log;
@@ -21,7 +21,7 @@ namespace TransferData.Model.Services
         }
 
         /// <summary>
-        /// Метод который делает настройки и вызывает метод для записи данных в файл
+        /// Делает настройку и вызывает метод для записи данных в файл
         /// </summary>
         /// <param name="tableName">Название таблицы</param>
         /// <param name="dbType">Тип СУБД в который надо перевести данные</param>

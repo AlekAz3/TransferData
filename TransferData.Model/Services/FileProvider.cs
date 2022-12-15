@@ -6,12 +6,12 @@ namespace TransferData.Model.Services
     /// <summary>
     /// Класс записи полученных запросов в файл
     /// </summary>
-    public class WriteToFile
+    public class FileProvider
     {
         private readonly ITransfer _transfer;
         private List<TableQuery> tableQueries = new List<TableQuery>();
 
-        public WriteToFile(ITransfer transfer)
+        public FileProvider(ITransfer transfer)
         {
             _transfer = transfer;
         }

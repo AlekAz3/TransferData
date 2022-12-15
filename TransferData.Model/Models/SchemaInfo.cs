@@ -15,7 +15,7 @@
         }
 
         /// <summary>
-        /// Возвращает строку сравнение полей с 
+        /// Возвращает строку сравнение полей 
         /// </summary>
         /// <returns></returns>
         internal string SetValuesSubQuery()
