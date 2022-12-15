@@ -3,6 +3,9 @@ using TransferData.Model.Models;
 
 namespace TransferData.Model.Services.Transfer
 {
+    /// <summary>
+    /// Класс сервис наследованный от ITransfer который переносит данные В MSSQL
+    /// </summary>
     public class TransferMSSQL : ITransfer
     {
         private readonly DbDataExtractor _dataExtractor;

@@ -4,6 +4,9 @@ using TransferData.Model.Models;
 
 namespace TransferData.Model.Services
 {
+    /// <summary>
+    /// Класс вход в программу
+    /// </summary>
     public class EntryPoint
     {
         private readonly DataContext _dataContext;
@@ -17,6 +20,11 @@ namespace TransferData.Model.Services
             _writer = writer;
         }
 
+        /// <summary>
+        /// Метод который делает настройки и вызывает метод для записи данных в файл
+        /// </summary>
+        /// <param name="tableName">Название таблицы</param>
+        /// <param name="dbType">Тип СУБД в который надо перевести данные</param>
         public void CreateFile(string tableName, DbType dbType)
         {
             if (!_dataContext.Database.CanConnect())

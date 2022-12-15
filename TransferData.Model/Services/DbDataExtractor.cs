@@ -6,6 +6,9 @@ using TransferData.Model.Models;
 
 namespace TransferData.Model.Services
 {
+    /// <summary>
+    /// Класс для извлечения данных с таблицы
+    /// </summary>
     public class DbDataExtractor
     {
         private readonly DataContext _dataContext;
@@ -16,9 +19,18 @@ namespace TransferData.Model.Services
             _dataContext = dataContext;
             _metadataExtractor = metadataExtractor;
         }
-
+        /// <summary>
+        /// Генерация запроса для получения всех данных с таблицы
+        /// </summary>
+        /// <param name="schema"></param>
+        /// <returns></returns>
         private string GenerateSelectQuary(SchemaInfo schema) => $"select * from {schema.TableName}";
 
+        /// <summary>
+        /// Получение "сырых" данных с таблицы 
+        /// </summary>
+        /// <param name="tableName">Название таблицы</param>
+        /// <returns></returns>
         private DataTable GetDataTable(string tableName)
         {
             var schema = _metadataExtractor.GetTableSchema(tableName);
@@ -42,6 +54,11 @@ namespace TransferData.Model.Services
             }
         }
 
+        /// <summary>
+        /// Получение данных с таблицы в виде двумерного списка
+        /// </summary>
+        /// <param name="tableName">Название таблицы</param>
+        /// <returns>Двумерный список</returns>
         public List<List<string>> ConvertDataTableToList(string tableName)
         {
             var schema = _metadataExtractor.GetTableSchema(tableName);

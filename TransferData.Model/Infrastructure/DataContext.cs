@@ -5,6 +5,9 @@ using TransferData.Model.Models;
 
 namespace TransferData.Model.Infrastructure
 {
+    /// <summary>
+    /// Создание класс контекста к обращению в базу данных
+    /// </summary>
     public class DataContext : DbContext
     {
         private readonly IConfiguration _config;
@@ -39,6 +42,7 @@ namespace TransferData.Model.Infrastructure
             }
 
         }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<InformationSchema>().HasNoKey();

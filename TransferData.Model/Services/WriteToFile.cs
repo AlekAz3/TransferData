@@ -3,6 +3,9 @@ using TransferData.Model.Services.Transfer;
 
 namespace TransferData.Model.Services
 {
+    /// <summary>
+    /// Класс записи полученных запросов в файл
+    /// </summary>
     public class WriteToFile
     {
         private readonly ITransfer _transfer;
@@ -12,7 +15,10 @@ namespace TransferData.Model.Services
         {
             _transfer = transfer;
         }
-
+        /// <summary>
+        /// Запись в файл
+        /// </summary>
+        /// <param name="tableName">Название таблицы</param>
         public void Write(string tableName)
         {
             tableQueries = _transfer.GetTableQueries(tableName);
